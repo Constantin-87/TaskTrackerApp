@@ -1,0 +1,27 @@
+<h1><%= @board.name %></h1>
+
+<%= link_to 'Add New Task', new_board_tasks_page_path(@board), class: 'btn btn-primary' if current_user.admin? || current_user.manager? %>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Description</th>
+      <th>Due Date</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @tasks.each do |task| %>
+      <tr>
+        <td><%= task.title %></td>
+        <td><%= task.description %></td>
+        <td><%= task.due_date %></td>
+        <td>
+          <%= link_to 'Edit', edit_board_tasks_page_path(@board, task), class: 'btn btn-secondary' %>
+          <%= link_to 'Delete', board_tasks_page_path(@board, task), method: :delete, data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }, class: 'btn btn-danger' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
