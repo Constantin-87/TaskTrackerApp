@@ -1,0 +1,5 @@
+<h1><%= @team.new_record? ? 'Create New Team' : 'Edit Team' %></h1>
+
+<%= render 'form', team: @team %>
+
+<%= link_to 'Back to Teams', teams_path, class: 'btn btn-secondary' %>

@@ -60,8 +60,8 @@ class AdminPageController < ApplicationController
   private
 
   def user_params
-    # Permit email, role, and password fields, but exclude password fields if blank
-    params.require(:user).permit(:email, :role).tap do |user_params|
+    # Permit first_name, last_name, email, role, and password fields, but exclude password fields if blank
+    params.require(:user).permit(:first_name, :last_name, :email, :role).tap do |user_params|
       if params[:user][:password].present?
         user_params[:password] = params[:user][:password]
         user_params[:password_confirmation] = params[:user][:password_confirmation]
@@ -71,6 +71,6 @@ class AdminPageController < ApplicationController
 
   def user_not_authorized
     flash[:alert] = 'You are not authorized to perform this action.'
-    redirect_to(root_path)
+    redirect_to(authenticated_root_path)
   end
 end

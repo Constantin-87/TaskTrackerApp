@@ -20,8 +20,11 @@ Rails.application.routes.draw do
   # Admin page routes for managing users (only for admins)
   resources :admin_page, only: [:index, :new, :create, :edit, :update, :destroy]
 
-   # Nested tasks routes under boards
-   resources :boards do
+  # Teams routes (only admins can manage teams)
+  resources :teams, only: [:index, :new, :create, :edit, :update, :destroy]
+
+  # Nested tasks routes under boards
+  resources :boards do
     resources :tasks_page, only: [:new, :create, :edit, :update, :destroy]
   end
 

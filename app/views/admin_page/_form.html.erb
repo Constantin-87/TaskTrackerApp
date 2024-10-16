@@ -1,27 +1,36 @@
-<%= form_with(model: user, local: true, url: user.new_record? ? admin_page_index_path : admin_page_path(user), method: user.new_record? ? :post : :patch) do |f| %>
-    <div class="form-group">
-      <%= f.label :email %>
-      <%= f.email_field :email, class: 'form-control' %>
-    </div>
+<%= form_with(model: user, local: true, url: user.new_record? ? admin_page_index_path : admin_page_path(user), method: user.new_record? ? :post : :patch, class: 'bg-dark text-light p-4 rounded shadow') do |f| %>
   
-    <div class="form-group">
-      <%= f.label :password %>
-      <%= f.password_field :password, class: 'form-control', placeholder: user.new_record? ? 'Enter password' : 'Leave this empty to not change the password', autocomplete: 'new-password' %>
-    </div>
+  <div class="form-group mb-3">
+    <%= f.label :first_name, class: 'form-label' %>
+    <%= f.text_field :first_name, class: 'form-control bg-secondary text-light' %>
+  </div>
+
+  <div class="form-group mb-3">
+    <%= f.label :last_name, class: 'form-label' %>
+    <%= f.text_field :last_name, class: 'form-control bg-secondary text-light' %>
+  </div>
   
-    <div class="form-group">
-      <%= f.label :password_confirmation %>
-      <%= f.password_field :password_confirmation, class: 'form-control', placeholder: user.new_record? ? 'Confirm password' : 'Leave this empty to not change the password', autocomplete: 'new-password' %>
-    </div>
-  
-    <div class="form-group">
-    <%= f.label :role %>
-        <!-- Populate the dropdown with valid roles from the enum -->
-        <%= f.select :role, options_for_select(User.roles.keys.map { |role| [role.humanize.capitalize, role] }, user.role), class: 'form-control' %>
-    </div>
-  
-    <div class="actions">
-      <%= f.submit user.new_record? ? 'Create User' : 'Update User', class: 'btn btn-primary' %>
-    </div>
-  <% end %>
-  
+  <div class="form-group mb-3">
+    <%= f.label :email, class: 'form-label' %>
+    <%= f.email_field :email, class: 'form-control bg-secondary text-light' %>
+  </div>
+
+  <div class="form-group mb-3">
+    <%= f.label :password, class: 'form-label' %>
+    <%= f.password_field :password, class: 'form-control bg-secondary text-light', placeholder: user.new_record? ? 'Enter password' : 'Leave this empty to not change the password', autocomplete: 'new-password' %>
+  </div>
+
+  <div class="form-group mb-3">
+    <%= f.label :password_confirmation, class: 'form-label' %>
+    <%= f.password_field :password_confirmation, class: 'form-control bg-secondary text-light', placeholder: user.new_record? ? 'Confirm password' : 'Leave this empty to not change the password', autocomplete: 'new-password' %>
+  </div>
+
+  <div class="form-group mb-3">
+    <%= f.label :role, class: 'form-label' %>
+    <%= f.select :role, options_for_select(User.roles.keys.map { |role| [role.humanize.capitalize, role] }, user.role), class: 'form-control bg-secondary text-light' %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit user.new_record? ? 'Create User' : 'Update User', class: 'btn btn-primary' %>
+  </div>
+<% end %>

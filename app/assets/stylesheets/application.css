@@ -13,3 +13,14 @@
  *= require_tree .
  *= require_self
  */
+
+ #sidebarMenu {
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .main-content {
+    flex-grow: 1;
+    min-height: 100vh;
+    overflow-y: auto;
+  }

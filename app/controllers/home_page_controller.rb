@@ -5,6 +5,7 @@ class HomePageController < ApplicationController
     def index
       # Home page for all logged-in users
       authorize :home_page, :index?
+      @tasks = current_user.tasks
     end
   end
   

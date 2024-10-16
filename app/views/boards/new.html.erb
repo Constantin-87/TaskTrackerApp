@@ -1,14 +1,22 @@
-<h1>New Board</h1>
+<h1>Create New Board</h1>
 
-<%= form_with model: @board, local: true do |form| %>
-  <div class="form-group">
-    <%= form.label :name %>
-    <%= form.text_field :name, class: 'form-control' %>
+<%= form_with(model: @board, local: true, class: 'bg-dark text-light p-4 rounded shadow') do |form| %>
+  
+  <div class="form-group mb-3">
+    <%= form.label :name, class: 'form-label' %>
+    <%= form.text_field :name, class: 'form-control bg-secondary text-light' %>
+  </div>
+
+  <!-- Team selection -->
+  <div class="form-group mb-3">
+    <%= form.label :team_id, "Select Team", class: 'form-label' %>
+    <%= form.collection_select :team_id, @teams, :id, :name, prompt: "Select a Team", class: 'form-control bg-secondary text-light' %>
   </div>
 
   <div class="actions">
     <%= form.submit 'Create Board', class: 'btn btn-primary' %>
   </div>
+
 <% end %>
 
-<%= link_to 'Back to Boards', boards_path, class: 'btn btn-secondary' %>
+<%= link_to 'Back to Boards', boards_path, class: 'btn btn-secondary mt-3' %>

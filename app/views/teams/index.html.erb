@@ -1,0 +1,26 @@
+<!-- app/views/teams/index.html.erb -->
+<h1 class="display-4 text-center mb-4">Teams Management</h1>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <%= link_to 'Create New Team', new_team_path, class: 'btn btn-success' if current_user.admin? %>
+</div>
+
+<table class="table table-hover table-bordered table-dark">
+  <thead class="thead-light">
+    <tr>
+      <th>Name</th>
+      <th class="text-center">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @teams.each do |team| %>
+      <tr>
+        <td><%= team.name %></td>
+        <td class="text-center">
+          <%= link_to 'Edit', edit_team_path(team), class: 'btn btn-outline-warning me-2' %>
+          <%= link_to 'Delete', team_path(team), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-outline-danger' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

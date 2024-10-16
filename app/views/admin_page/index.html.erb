@@ -1,25 +1,29 @@
-<h1>User Management</h1>
+<h1 class="display-4 text-center mb-4">User Management</h1>
 
-<table class="table table-striped">
-  <thead>
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <%= link_to 'Add New User', new_admin_page_path, class: 'btn btn-success' %>
+</div>
+
+<table class="table table-hover table-bordered table-dark">
+  <thead class="thead-light">
     <tr>
+      <th>Name</th>
       <th>Email</th>
       <th>Role</th>
-      <th>Actions</th>
+      <th class="text-center">Actions</th>
     </tr>
   </thead>
   <tbody>
     <% @users.each do |user| %>
       <tr>
+        <td><%= "#{user.first_name} #{user.last_name}" %></td> <!-- Concatenated first_name and last_name -->
         <td><%= user.email %></td>
-        <td><%= user.role %></td>
-        <td>
-          <%= link_to 'Edit', edit_admin_page_path(user), class: 'btn btn-secondary' %>
-          <%= link_to 'Delete', admin_page_path(user), method: :delete, data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }, class: 'btn btn-danger' %>
+        <td><%= user.role.capitalize %></td>
+        <td class="text-center">
+          <%= link_to 'Edit', edit_admin_page_path(user), class: 'btn btn-outline-warning me-2' %>
+          <%= link_to 'Delete', admin_page_path(user), method: :delete, data: { turbo_confirm: 'Are you sure?' }, class: 'btn btn-outline-danger' %>
         </td>
       </tr>
     <% end %>
   </tbody>
 </table>
-
-<%= link_to 'Add New User', new_admin_page_path, class: 'btn btn-success' %>
