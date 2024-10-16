@@ -1,3 +1,4 @@
+<!-- app/views/home_page/index.html.erb -->
 <h1>Welcome to the Home Page</h1>
 <h3>Your Tasks</h3>
 
@@ -5,24 +6,24 @@
   <% @tasks.each do |task| %>
     <div class="accordion-item" id="task-<%= task.id %>">
       <h2 class="accordion-header" id="heading<%= task.id %>">
-        <button class="accordion-button collapsed bg-secondary text-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<%= task.id %>" aria-expanded="false" aria-controls="collapse<%= task.id %>">
-            <strong><%= task.title %></strong> 
-            - Priority: <%= task.priority.humanize.capitalize %>
-            | Board: <%= task.board.name %>
+        <button class="accordion-button collapsed bg-secondary text-light accordion-toggle" type="button" data-task-id="#collapse<%= task.id %>">
+          <strong><%= task.title %></strong> 
+          - Priority: <%= task.priority.humanize.capitalize %>
+          | Board: <%= task.board.name %>
         </button>
       </h2>
-      <div id="collapse<%= task.id %>" class="accordion-collapse collapse" aria-labelledby="heading<%= task.id %>" data-bs-parent="#tasksAccordion">
+      <div id="collapse<%= task.id %>" class="accordion-collapse collapse" style="display:none;"> <!-- Initially hidden -->
         <div class="accordion-body bg-dark text-light">
-            <p><strong>Description:</strong> <%= task.description %></p>
-            <p><strong>Due Date:</strong> <%= task.due_date.strftime("%d %b %Y") %></p>
-          
-            <!-- Dropdown for updating status -->
-            <p><strong>Status:</strong>
+          <p><strong>Description:</strong> <%= task.description %></p>
+          <p><strong>Due Date:</strong> <%= task.due_date.strftime("%d %b %Y") %></p>
+
+          <!-- Dropdown for updating status -->
+          <p><strong>Status:</strong>
             <%= form_with model: task, local: true, url: board_tasks_page_path(task.board, task), method: :patch do |f| %>
-                <%= f.select :status, Task.statuses.keys.map { |s| [s.humanize.capitalize, s] }, { selected: task.status }, class: 'form-select bg-secondary text-light' %>
-                <%= f.submit "Update", class: 'btn btn-outline-light mt-2' %>
+              <%= f.select :status, Task.statuses.keys.map { |s| [s.humanize.capitalize, s] }, { selected: task.status }, class: 'form-select bg-secondary text-light' %>
+              <%= f.submit "Update", class: 'btn btn-outline-light mt-2' %>
             <% end %>
-            </p>
+          </p>
         </div>
       </div>
     </div>
