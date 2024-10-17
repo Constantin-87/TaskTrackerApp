@@ -1,4 +1,3 @@
-# app/controllers/admin_page_controller.rb
 class AdminPageController < ApplicationController
   before_action :authenticate_user!
   after_action :verify_authorized

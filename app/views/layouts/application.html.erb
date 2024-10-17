@@ -131,19 +131,19 @@
             <%= yield %>
 
             <!-- Floating Notification Box -->
-            <div id="notification-box" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050;">
-              <% if user_signed_in? && current_user.notifications.unread.any? %>
-                <% current_user.notifications.unread.each do |notification| %>
-                  <div class="alert alert-info alert-dismissible fade show" role="alert">
-                    <%= notification.message.html_safe %>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                  </div>
+            <%= content_tag(:div, "", class: "position-fixed bottom-0 end-0 p-3", id: "notification-box", data: { controller: "notification" }) %>
 
-                  <%# Mark the notification as read after displaying it %>
-                  <% notification.update(read: true) %>
-                <% end %>
+            <% if user_signed_in? && current_user.notifications.unread.any? %>
+              <% current_user.notifications.unread.each do |notification| %>
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                  <%= notification.message.html_safe %>
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <%# Mark the notification as read after displaying it %>
+                <% notification.update(read: true) %>
               <% end %>
-            </div>
+            <% end %>
 
           </div>
         </main>
@@ -157,7 +157,6 @@
 
     <script>
     $(document).on('turbo:load', function() {
-        console.log("Page loaded with turbo.");
 
         // Task Accordion Toggle (for manual clicks)
         $('.accordion-toggle').off('click').on('click', function() {

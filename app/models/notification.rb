@@ -5,4 +5,10 @@ class Notification < ApplicationRecord
   scope :unread, -> { where(read: false) }
 
   validates :message, presence: true
+
+  # Broadcast to the NotificationsChannel after the notification is created
+  after_create_commit do
+    NotificationChannel.broadcast_to(user, message: self.message)
+  end
+
 end

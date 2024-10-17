@@ -1,4 +1,3 @@
-# app/policies/admin_page_policy.rb
 class AdminPagePolicy < ApplicationPolicy
   def index?
     user.admin? # Only admins can access the admin page

@@ -1,4 +1,3 @@
-# app/policies/task_policy.rb
 class TaskPolicy < ApplicationPolicy
   def index?
     user.present? # All logged-in users can view tasks
