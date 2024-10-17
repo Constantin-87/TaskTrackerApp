@@ -15,10 +15,15 @@ class TeamsController < ApplicationController
   def create
     @team = Team.new(team_params)
     authorize @team
-    if @team.save
-      redirect_to teams_path, notice: 'Team was successfully created.'
-    else
-      render :new
+
+    respond_to do |format|
+      if @team.save
+        format.html { redirect_to teams_path, notice: "Team was successfully created." }
+        format.turbo_stream { redirect_to teams_path, notice: "Team was successfully created." }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+        format.turbo_stream { render turbo_stream: turbo_stream.replace("form_errors", partial: "shared/form_errors", locals: { object: @team }), status: :unprocessable_entity }
+      end
     end
   end
 
@@ -30,10 +35,14 @@ class TeamsController < ApplicationController
   def update
     @team = Team.find(params[:id])
     authorize @team
-    if @team.update(team_params)
-      redirect_to teams_path, notice: 'Team was successfully updated.'
-    else
-      render :edit
+    respond_to do |format|
+      if @team.update(team_params)
+        format.html { redirect_to teams_path, notice: "Team was successfully updated." }
+        format.turbo_stream { redirect_to teams_path, notice: "Team was successfully updated." }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+        format.turbo_stream { render turbo_stream: turbo_stream.replace("form_errors", partial: "shared/form_errors", locals: { object: @team }), status: :unprocessable_entity }
+      end
     end
   end
 
@@ -41,16 +50,16 @@ class TeamsController < ApplicationController
     @team = Team.find(params[:id])
     authorize @team
     @team.destroy
-    redirect_to teams_path, notice: 'Team was successfully deleted.'
+    redirect_to teams_path, notice: "Team was successfully deleted."
   end
 
   private
 
   def team_params
-    params.require(:team).permit(:name, user_ids: [], board_ids: [])
+    params.require(:team).permit(:name, :description, user_ids: [], board_ids: [])
   end
 
   def authorize_admin
-    redirect_to(root_path, alert: 'Not authorized') unless current_user.admin?
+    redirect_to(root_path, alert: "Not authorized") unless current_user.admin?
   end
 end

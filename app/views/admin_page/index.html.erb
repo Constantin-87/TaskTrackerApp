@@ -21,7 +21,11 @@
         <td><%= user.role.capitalize %></td>
         <td class="text-center">
           <%= link_to 'Edit', edit_admin_page_path(user), class: 'btn btn-outline-warning me-2' %>
-          <%= link_to 'Delete', admin_page_path(user), method: :delete, data: { turbo_confirm: 'Are you sure?' }, class: 'btn btn-outline-danger' %>
+          <% unless user == current_user %>
+            <%= link_to 'Delete', admin_page_path(user), method: :delete, data: { confirm: "Are you sure you want to delete the user '#{user.first_name} #{user.last_name}'? This action cannot be undone." }, class: 'btn btn-outline-danger' %>
+          <% else %>
+            <button class="btn btn-outline-danger" disabled>Delete (Disabled)</button>
+          <% end %>
         </td>
       </tr>
     <% end %>

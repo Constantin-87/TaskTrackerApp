@@ -57,6 +57,7 @@ group :test do
 end
 
 gem "devise", "~> 4.9"
-
+gem "observer"
 gem "pundit", "~> 2.4"
 gem "jquery-rails", "~> 4.6"
+gem "rails-controller-testing"

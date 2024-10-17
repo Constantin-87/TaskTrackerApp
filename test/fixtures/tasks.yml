@@ -1,11 +1,71 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+# test/fixtures/tasks.yml
 
 one:
-  title: MyString
-  description: MyText
-  due_date: 2024-10-13
+  title: "Build API"
+  description: "Build the backend API for handling user requests."
+  due_date: 2024-10-30
+  user: admin_user
+  board: adminBoard
 
 two:
-  title: MyString
-  description: MyText
-  due_date: 2024-10-13
+  title: "Design Homepage"
+  description: "Create the UI for the homepage and implement its functionality."
+  due_date: 2024-11-05
+  user: agent_user
+  board: agentBoard
+
+three:
+  title: "Implement Authentication"
+  description: "Set up user authentication with Devise."
+  due_date: 2024-11-10
+  user: manager_user
+  board: managerBoard
+
+four:
+  title: "Create Task Model"
+  description: "Define the Task model and associations."
+  due_date: 2024-12-01
+  user: agent_user
+  board: agentBoard
+
+five:
+  title: "Write Tests for Board"
+  description: "Implement tests for Board model and controllers."
+  due_date: 2024-11-15
+  user: admin_user
+  board: adminBoard
+
+six:
+  title: "Configure CI/CD Pipeline"
+  description: "Set up CI/CD pipeline for automatic deployment."
+  due_date: 2024-12-10
+  user: admin_user
+  board: adminBoard
+
+seven:
+  title: "Create Reports Feature"
+  description: "Develop reporting feature for task completion."
+  due_date: 2024-12-20
+  user: manager_user
+  board: managerBoard
+
+eight:
+  title: "Optimize Database Queries"
+  description: "Optimize SQL queries for performance."
+  due_date: 2024-11-25
+  user: agent_user
+  board: agentBoard
+
+nine:
+  title: "Design Notifications UI"
+  description: "Create user interface for displaying notifications."
+  due_date: 2024-11-30
+  user: admin_user
+  board: adminBoard
+
+ten:
+  title: "Integrate Payment Gateway"
+  description: "Add payment gateway for premium features."
+  due_date: 2024-12-15
+  user: manager_user
+  board: managerBoard

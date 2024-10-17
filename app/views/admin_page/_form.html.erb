@@ -2,32 +2,50 @@
   
   <div class="form-group mb-3">
     <%= f.label :first_name, class: 'form-label' %>
-    <%= f.text_field :first_name, class: 'form-control bg-secondary text-light' %>
+    <%= f.text_field :first_name, class: 'form-control bg-secondary text-light', autocomplete: 'off' %>
+    <% if user.errors[:first_name].any? %>
+      <div class="text-danger"><%= user.errors[:first_name].first %></div>
+    <% end %>
   </div>
 
   <div class="form-group mb-3">
     <%= f.label :last_name, class: 'form-label' %>
-    <%= f.text_field :last_name, class: 'form-control bg-secondary text-light' %>
+    <%= f.text_field :last_name, class: 'form-control bg-secondary text-light', autocomplete: 'off' %>
+    <% if user.errors[:last_name].any? %>
+      <div class="text-danger"><%= user.errors[:last_name].first %></div>
+    <% end %>
   </div>
   
   <div class="form-group mb-3">
     <%= f.label :email, class: 'form-label' %>
-    <%= f.email_field :email, class: 'form-control bg-secondary text-light' %>
+    <%= f.email_field :email, class: 'form-control bg-secondary text-light', autocomplete: 'off' %>
+    <% if user.errors[:email].any? %>
+      <div class="text-danger"><%= user.errors[:email].first %></div>
+    <% end %>
   </div>
 
   <div class="form-group mb-3">
     <%= f.label :password, class: 'form-label' %>
-    <%= f.password_field :password, class: 'form-control bg-secondary text-light', placeholder: user.new_record? ? 'Enter password' : 'Leave this empty to not change the password', autocomplete: 'new-password' %>
+    <%= f.password_field :password, class: 'form-control bg-secondary text-light', placeholder: user.new_record? ? 'Enter password' : 'Leave this empty to not change the password', autocomplete: 'new-password', autocomplete: 'off' %>
+    <% if user.errors[:password].any? %>
+      <div class="text-danger"><%= user.errors[:password].first %></div>
+    <% end %>
   </div>
 
   <div class="form-group mb-3">
     <%= f.label :password_confirmation, class: 'form-label' %>
-    <%= f.password_field :password_confirmation, class: 'form-control bg-secondary text-light', placeholder: user.new_record? ? 'Confirm password' : 'Leave this empty to not change the password', autocomplete: 'new-password' %>
+    <%= f.password_field :password_confirmation, class: 'form-control bg-secondary text-light', placeholder: user.new_record? ? 'Confirm password' : 'Leave this empty to not change the password', autocomplete: 'new-password', autocomplete: 'off' %>
+    <% if user.errors[:password_confirmation].any? %>
+      <div class="text-danger"><%= user.errors[:password_confirmation].first %></div>
+    <% end %>
   </div>
 
   <div class="form-group mb-3">
     <%= f.label :role, class: 'form-label' %>
-    <%= f.select :role, options_for_select(User.roles.keys.map { |role| [role.humanize.capitalize, role] }, user.role), class: 'form-control bg-secondary text-light' %>
+    <%= f.select :role, options_for_select(User.roles.keys.map { |role| [role.humanize.capitalize, role] }, user.role), class: 'form-control bg-secondary text-light', autocomplete: 'off' %>
+    <% if user.errors[:role].any? %>
+      <div class="text-danger"><%= user.errors[:role].first %></div>
+    <% end %>
   </div>
 
   <div class="actions">

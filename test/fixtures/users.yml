@@ -1,11 +1,25 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+# test/fixtures/users.yml
 
-# This model initially had no columns defined. If you add columns to the
-# model remove the "{}" from the fixture names and add the columns immediately
-# below each fixture, per the syntax in the comments below
-#
-one: {}
-# column: value
-#
-two: {}
-# column: value
+admin_user:
+  first_name: "Admin"
+  last_name: "User"
+  email: "admin@example.com"
+  role: "admin"
+  encrypted_password: "$2a$12$cy86BBUDZ3RdxpvIsA7VsOjjzEcDr4d.XTwc1YlK1rlK/daKfhZIC"
+  team: adminTeam
+
+manager_user:
+  first_name: "Manager"
+  last_name: "User"
+  email: "manager@example.com"
+  role: "manager"
+  encrypted_password: "$2a$12$cy86BBUDZ3RdxpvIsA7VsOjjzEcDr4d.XTwc1YlK1rlK/daKfhZIC"
+  team: managerTeam
+
+agent_user:
+  first_name: "Agent"
+  last_name: "User"
+  email: "agent@example.com"
+  role: "agent"
+  encrypted_password: "$2a$12$cy86BBUDZ3RdxpvIsA7VsOjjzEcDr4d.XTwc1YlK1rlK/daKfhZIC"
+  team: agentTeam

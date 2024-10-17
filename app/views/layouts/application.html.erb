@@ -1,7 +1,7 @@
-<!-- app/views/layouts/application.html.erb -->
 <!DOCTYPE html>
 <html>
   <head>
+  
     <title>Task Tracker</title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -11,6 +11,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload' %>
     <%= javascript_importmap_tags %>
+
   </head>
 
   <body class="bg-dark text-light">
@@ -18,135 +19,21 @@
       <div class="row w-100">
       
         <!-- Left-side navigation menu for signed-in users -->
-        <% if user_signed_in? %>
-          <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse">
-            <div class="position-sticky pt-3">
-              <!-- User info -->
-              <h5 class="text-center mb-4">Hello, <%= current_user.first_name %></h5>
+        <%= render 'shared/sidebar' if user_signed_in? %>
 
-              <!-- Navigation Items -->
-              <ul class="nav flex-column">
-                <!-- Home Link -->
-                <li class="nav-item mb-2">
-                  <%= link_to authenticated_root_path, data: { turbo: false }, class: 'nav-link text-light d-flex align-items-center' do %>
-                    <i class="bi bi-house me-2"></i>
-                    Home
-                  <% end %>
-                </li>
-
-                <!-- Boards Accordion -->
-                <li class="nav-item">
-                  <div class="accordion bg-dark" id="boardsAccordion">
-                    <div class="accordion-item bg-dark border-0">
-                      <h2 class="accordion-header" id="boardsHeading">
-                        <button class="accordion-button text-light bg-dark shadow-none collapsed d-flex align-items-center accordion-toggle" type="button" data-task-id="#boardsCollapse">
-                          <i class="bi bi-columns-gap me-2"></i>
-                          Boards
-                        </button>
-                      </h2>
-                      <div id="boardsCollapse" class="accordion-collapse collapse" style="display:none;"> <!-- Initially hidden -->
-                        <div class="accordion-body p-0">
-                          <ul class="list-group list-group-flush bg-dark">
-                            <!-- Add New Board (only for admins and managers) -->
-                            <% if current_user.manager? || current_user.admin? %>
-                              <li class="list-group-item bg-dark text-light">
-                                <%= link_to new_board_path, data: { turbo: false }, class: 'nav-link text-light d-flex align-items-center' do %>
-                                  <i class="bi bi-plus-lg me-2"></i>
-                                  Add New Board
-                                <% end %>
-                              </li>
-                            <% end %>
-
-                            <!-- Display Boards based on user role -->
-                            <% if @boards.present? %>
-                              <% @boards.each do |board| %>
-                                <% if current_user.admin? || (current_user.manager? && board.team_id == current_user.team_id) || (current_user.agent? && board.team_id == current_user.team_id) %>
-                                  <li class="list-group-item bg-dark text-light">
-                                    <%= link_to board_path(board), data: { turbo: false }, class: 'nav-link text-light d-flex align-items-center' do %>
-                                      <i class="bi bi-folder2-open me-2"></i>
-                                      <span><%= board.name %></span>
-                                    <% end %>
-                                  </li>
-                                <% end %>
-                              <% end %>
-                            <% else %>
-                              <li class="list-group-item bg-dark text-light">No boards available</li>
-                            <% end %>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-
-                <!-- Administration Accordion (Only for Admins) -->
-                <% if current_user.admin? %>
-                  <li class="nav-item mt-2">
-                    <div class="accordion bg-dark" id="adminAccordion">
-                      <div class="accordion-item bg-dark border-0">
-                        <h2 class="accordion-header" id="adminHeading">
-                          <button class="accordion-button text-light bg-dark shadow-none collapsed d-flex align-items-center accordion-toggle" type="button" data-task-id="#adminCollapse">
-                            <i class="bi bi-gear-fill me-2"></i>
-                            Administration
-                          </button>
-                        </h2>
-                        <div id="adminCollapse" class="accordion-collapse collapse" style="display:none;"> <!-- Initially hidden -->
-                          <div class="accordion-body p-0">
-                            <ul class="list-group list-group-flush bg-dark">
-                              <li class="list-group-item bg-dark text-light">
-                                <%= link_to teams_path, data: { turbo: false }, class: 'nav-link text-light d-flex align-items-center' do %>
-                                  <i class="bi bi-people-fill me-2"></i>
-                                  Teams
-                                <% end %>
-                              </li>
-                              <li class="list-group-item bg-dark text-light">
-                                <%= link_to admin_page_index_path, data: { turbo: false }, class: 'nav-link text-light d-flex align-items-center' do %>
-                                  <i class="bi bi-tools me-2"></i>
-                                  Admin
-                                <% end %>
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                <% end %>
-
-                <!-- Sign Out Link -->
-                <li class="nav-item mt-3">
-                  <%= link_to destroy_user_session_path, data: { turbo_method: :delete }, class: 'nav-link text-light d-flex align-items-center' do %>
-                    <i class="bi bi-box-arrow-left me-2"></i>
-                    Sign Out
-                  <% end %>
-                </li>
-              </ul>
+        <!-- Main content area wrapped inside a container for better control -->
+        <main class="<%= user_signed_in? ? 'col-md-9 ms-sm-auto col-lg-10 px-md-4' : 'w-100 d-flex justify-content-center align-items-center' %>">
+          <div class="container mt-4"> <!-- Apply container and margin -->
+            <div class="row justify-content-left"> <!-- Center the content horizontally -->
+              <div class="col-lg-10 col-md-12"> <!-- Control the width using Bootstrap column classes -->
+                <%= yield %>
+                <!-- Floating Notification Box -->
+                <%= render 'shared/notifications' if user_signed_in? %>
+              </div>
             </div>
-          </nav>
-        <% end %>
-
-        <!-- Main content area -->
-        <main class="<%= user_signed_in? ? 'col-md-9 ms-sm-auto col-lg-10 px-md-4' : 'w-100 d-flex justify-content-center align-items-center' %> px-md-4">
-          <div class="w-100">
-            <%= yield %>
-
-            <!-- Floating Notification Box -->
-            <%= content_tag(:div, "", class: "position-fixed bottom-0 end-0 p-3", id: "notification-box", data: { controller: "notification" }) %>
-
-            <% if user_signed_in? && current_user.notifications.unread.any? %>
-              <% current_user.notifications.unread.each do |notification| %>
-                <div class="alert alert-info alert-dismissible fade show" role="alert">
-                  <%= notification.message.html_safe %>
-                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-
-                <%# Mark the notification as read after displaying it %>
-                <% notification.update(read: true) %>
-              <% end %>
-            <% end %>
-
           </div>
         </main>
+
       </div>
     </div>
 
@@ -155,51 +42,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <script>
-    $(document).on('turbo:load', function() {
-
-        // Task Accordion Toggle (for manual clicks)
-        $('.accordion-toggle').off('click').on('click', function() {
-            var collapseTarget = $(this).attr('data-task-id');
-            console.log("Task accordion clicked. Target: " + collapseTarget);
-            $(collapseTarget).slideToggle();  // Toggle visibility on manual click
-            $(this).toggleClass('active');    // Optionally toggle active class
-        });
-
-        // Wait for the window to fully load before trying to auto-expand a task
-        $(window).on('load', function() {
-            var taskId = window.location.hash;
-            if (taskId) {
-                console.log("Auto-expanding task with ID: " + taskId);
-                var collapseTarget = $(taskId);
-                
-                if (collapseTarget.length) {
-                    console.log("Expanding task: " + taskId);
-                    collapseTarget.slideDown();   // Expanding the collapseTarget
-                    $('html, body').animate({
-                        scrollTop: collapseTarget.offset().top
-                    }, 1000);  // Smooth scroll to the task
-                } else {
-                    console.log("Task element not found for ID: " + taskId);
-                }
-
-            } else {
-                console.log("No task ID found in the URL.");
-            }
-        });
-
-        
-    });
-
-    // Disable Turbo if necessary on notification link clicks
-    document.addEventListener('turbo:before-fetch-request', function(event) {
-        if (event.target.matches('a[data-turbo="false"]')) {
-            console.log("Turbo navigation prevented for link:", event.target.href);
-            event.preventDefault();  // Prevent Turbo from handling the link
-        }
-    });
-</script>
-
+    <%= javascript_include_tag 'common', 'data-turbo-track': 'reload' %>
 
   </body>
+
 </html>

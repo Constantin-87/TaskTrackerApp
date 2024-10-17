@@ -15,11 +15,16 @@ class AdminPageController < ApplicationController
 
   def create
     @user = User.new(user_params)
-    authorize :admin_page, :create? # Only admins can create users
-    if @user.save
-      redirect_to admin_page_index_path, notice: 'User was successfully created.'
-    else
-      render :new
+    authorize :admin_page, :create?
+
+    respond_to do |format|
+      if @user.save
+        format.html { redirect_to admin_page_index_path, notice: "User was successfully created." }
+        format.turbo_stream { redirect_to admin_page_index_path, notice: "User was successfully created." }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+        format.turbo_stream { render turbo_stream: turbo_stream.replace("form_errors", partial: "shared/form_errors", locals: { object: @user }), status: :unprocessable_entity }
+      end
     end
   end
 
@@ -31,24 +36,27 @@ class AdminPageController < ApplicationController
   def update
     @user = User.find(params[:id])
     authorize :admin_page, :update? # Only admins can update users
-    if @user.update(user_params)
-      redirect_to admin_page_index_path, notice: 'User was successfully updated.'
-    else
-      render :edit
+    respond_to do |format|
+      if @user.update(user_params)
+        format.html { redirect_to admin_page_index_path, notice: "User was successfully updated." }
+        format.turbo_stream { redirect_to admin_page_index_path, notice: "User was successfully updated." }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+        format.turbo_stream { render turbo_stream: turbo_stream.replace("form_errors", partial: "shared/form_errors", locals: { object: @user }), status: :unprocessable_entity }
+      end
     end
   end
 
   def destroy
     @user = User.find(params[:id])
-    
+    authorize :admin_page, :destroy? # Only admins can delete users
     if @user == current_user
       flash[:alert] = "You cannot delete your own account."
       redirect_to admin_page_index_path
     else
-      authorize :admin_page, :destroy? # Only admins can delete users
       @user.destroy
       if @user.destroy
-        redirect_to admin_page_index_path, notice: 'User was successfully deleted.'
+        redirect_to admin_page_index_path, notice: "User was successfully deleted."
       else
         flash[:alert] = "Failed to delete the user."
         redirect_to admin_page_index_path
@@ -59,17 +67,19 @@ class AdminPageController < ApplicationController
   private
 
   def user_params
-    # Permit first_name, last_name, email, role, and password fields, but exclude password fields if blank
-    params.require(:user).permit(:first_name, :last_name, :email, :role).tap do |user_params|
-      if params[:user][:password].present?
-        user_params[:password] = params[:user][:password]
-        user_params[:password_confirmation] = params[:user][:password_confirmation]
-      end
+    # Permit first_name, last_name, email, role, and password fields, including password confirmation if present
+    permitted_params = params.require(:user).permit(:first_name, :last_name, :email, :role)
+
+    if params[:user][:password].present?
+      permitted_params[:password] = params[:user][:password]
+      permitted_params[:password_confirmation] = params[:user][:password_confirmation]
     end
+
+    permitted_params
   end
 
   def user_not_authorized
-    flash[:alert] = 'You are not authorized to perform this action.'
+    flash[:alert] = "You are not authorized to perform this action."
     redirect_to(authenticated_root_path)
   end
 end

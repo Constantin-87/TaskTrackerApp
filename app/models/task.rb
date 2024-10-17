@@ -1,4 +1,4 @@
-require 'observer'
+require "observer"
 
 class Task < ApplicationRecord
     include Observable
@@ -6,8 +6,9 @@ class Task < ApplicationRecord
     belongs_to :board
     belongs_to :user, optional: true
 
-    enum status: { not_started: 0, in_progress: 1, on_pause: 2, done: 3, cannot_be_done: 4, canceled: 5 }
-    enum priority: { low: 0, medium: 1, high: 2, urgent: 3 }
+    # Use positional arguments for enums instead of keyword arguments
+    enum status: [ :not_started, :in_progress, :on_pause, :done, :cannot_be_done, :canceled ]
+    enum priority: [ :low, :medium, :high, :urgent ]
 
     after_save :notify_changes
     after_destroy :notify_deletion
@@ -15,21 +16,21 @@ class Task < ApplicationRecord
     private
 
     def notify_changes
-        if user.present?
-        changed_attributes = self.previous_changes.except(:updated_at, :created_at)
-        if changed_attributes.any?
-            changed_attributes.keys.each do |attr|
-            changed
-            notify_observers("Task #{attr} was updated", self)
-            end
-        end
-        end
+      return unless user.present?
+
+      # Notify observers of changes (this can be refactored to ActiveSupport::Notifications)
+      changed_attributes = previous_changes.except(:updated_at, :created_at)
+      changed_attributes.each_key do |attr|
+        changed
+        notify_observers("Task #{attr} was updated", self)
+      end if changed_attributes.any?
     end
 
     def notify_deletion
-        if user.present?
-        changed
-        notify_observers("Task '#{title}' was deleted", self)
-        end
+      return unless user.present?
+
+      # Notify observers of deletion (this can be refactored to ActiveSupport::Notifications)
+      changed
+      notify_observers("Task '#{title}' was deleted", self)
     end
 end

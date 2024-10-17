@@ -1,7 +1,13 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+# test/fixtures/teams.yml
 
-one:
-  name: MyString
+agentTeam:
+  name: "Agent Team"
+  description: "Handles all the Agents."
 
-two:
-  name: MyString
+managerTeam:
+  name: "Manager Team"
+  description: "Responsible for all Managers."
+
+adminTeam:
+  name: "Admin Team"
+  description: "Responsible for all Admins."

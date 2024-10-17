@@ -1,45 +1,41 @@
 class BoardPolicy < ApplicationPolicy
+  def index?
+    user.admin? || user.manager? || user.agent?
+  end
 
-    def index?
-      user.admin? || (user.manager? && record.team_id == user.team_id) || (user.agent? && record.team_id == user.team_id)
-    end
+  def show?
+    user.admin? || user_has_access_to_team?
+  end
 
-    # Only admins and managers can create new boards
-    def new?
-      user.admin? || user.manager?
-    end
-  
-    def create?
-      new?
-    end
-  
-    # Admins can see all boards, Managers and Agents only see their team's boards
-    def show?
-      user.admin? || (user.manager? && record.team_id == user.team_id) || (user.agent? && record.team_id == user.team_id)
-    end
-  
-    # Only admins and managers can update boards
-    def update?
-      user.admin? || user.manager?
-    end
-  
-    # Only admins can delete boards
-    def destroy?
-      user.admin? || (user.manager? && record.team_id == user.team_id)
-    end
-  
-    class Scope < Scope
-      def resolve
-        if user.admin?
-          scope.all  # Admins see all boards
-        elsif user.manager?
-          scope.where(team_id: user.team_id)  # Managers see boards of their own team
-        elsif user.agent?
-          scope.where(team_id: user.team_id)  # Agents see boards of their own team
-        else
-          scope.none  # No access for other roles
-        end
+  def new?
+    user.admin? || user.manager?
+  end
+
+  def create?
+    new?
+  end
+
+  def update?
+    user.admin? || user.manager?
+  end
+
+  def destroy?
+    user.admin?
+  end
+
+  class Scope < Scope
+    def resolve
+      if user.admin?
+        scope.all  # Admin sees all boards
+      else
+        scope.where(team_id: user.team_id)  # Non-admins see boards for their team
       end
     end
+  end
+
+  private
+
+  def user_has_access_to_team?
+    (user.manager? || user.agent?) && record.team_id == user.team_id
+  end
 end
-  

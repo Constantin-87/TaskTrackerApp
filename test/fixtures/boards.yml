@@ -1,7 +1,15 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+# test/fixtures/boards.yml
+agentBoard:
+  name: "agent Board"
+  description: "This is board one."
+  team: agentTeam # Reference a team fixture
 
-one:
-  name: MyString
+managerBoard:
+  name: "manager Board"
+  description: "This is board two."
+  team: managerTeam # Reference another team fixture
 
-two:
-  name: MyString
+adminBoard:
+  name: "adminBoard"
+  description: "This is board two."
+  team: adminTeam # Reference another team fixture

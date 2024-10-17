@@ -3,4 +3,5 @@ class Board < ApplicationRecord
   has_many :tasks, dependent: :destroy
 
   validates :name, presence: true
+  validates :description, presence: true, length: { minimum: 10 }
 end
