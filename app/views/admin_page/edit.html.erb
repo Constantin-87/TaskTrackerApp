@@ -1,4 +1,4 @@
-<h1>Edit User</h1>
+<h1>Edit User: <%= @user.first_name + ' ' + @user.last_name %></h1>
 
 <div id="form_errors">
   <!-- This div will be replaced with error messages -->
@@ -7,4 +7,4 @@
 <div id="user_form">
     <%= render 'form', user: @user %>
 </div>
-<%= link_to 'Back to Users', admin_page_index_path, class: 'btn btn-secondary mt-3' %>
+<%= link_to 'Back to Users', admin_page_index_path, class: 'btn btn-secondary mt-2' %>

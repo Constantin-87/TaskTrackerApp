@@ -8,17 +8,32 @@
 <table class="table table-hover table-bordered table-dark">
   <thead class="thead-light">
     <tr>
-      <th>Name</th>
+      <th>Team Name</th>
+      <th>Description</th>
+      <th>Members</th>
+      <th>Boards</th>
       <th class="text-center">Actions</th>
     </tr>
   </thead>
   <tbody>
     <% @teams.each do |team| %>
-      <tr>
+      <tr>        
+        <!-- Display team name -->
         <td><%= team.name %></td>
+
+        <!-- Display team description -->
+        <td><%= truncate(team.description, length: 70, omission: '...') %></td>
+
+        <!-- Display Team Members Count -->
+        <td><%= team.users.count %> members</td>
+
+        <!-- Display Boards Count -->
+        <td><%= team.boards.count %> boards</td>
+
+        <!-- Display actions -->
         <td class="text-center">
           <%= link_to 'Edit', edit_team_path(team), class: 'btn btn-outline-warning me-2' %>
-          <%= link_to 'Delete', team_path(team), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-outline-danger' %>
+          <%= link_to 'Delete', team_path(team), method: :delete, data: { confirm: "Are you sure you want to delete '#{team.name}' team? This action cannot be undone." }, class: 'btn btn-outline-danger' %>
         </td>
       </tr>
     <% end %>

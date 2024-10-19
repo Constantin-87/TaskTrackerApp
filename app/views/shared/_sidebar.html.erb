@@ -1,5 +1,5 @@
-<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse">
-            <div class="position-sticky pt-3">
+<nav id="sidebarMenu" class="col-md-2 col-lg-2 d-md-block bg-dark sidebar collapse">
+            <div class="position-sticky pt-3" style="overflow-y: auto;">
               <!-- User info -->
               <h5 class="text-center mb-4">Hello, <%= current_user.first_name %></h5>
 
@@ -15,7 +15,7 @@
                      
 
                 <!-- Boards Accordion -->
-                <li class="nav-item">
+                <li class="nav-item mb-2">
                   <div class="accordion bg-dark" id="boardsAccordion">
                     <div class="accordion-item bg-dark border-0">
                       <h2 class="accordion-header" id="boardsHeading">
@@ -29,7 +29,7 @@
                           <ul class="list-group list-group-flush bg-dark">
                             <!-- Add New Board (only for admins and managers) -->
                             <% if current_user.manager? || current_user.admin? %>
-                              <li class="list-group-item bg-dark text-light">
+                              <li class="list-group-item bg-dark text-light border-0">
                                 <%= link_to new_board_path, data: { turbo: false }, class: 'nav-link text-light d-flex align-items-center' do %>
                                   <i class="bi bi-plus-lg me-2"></i>
                                   Add New Board
@@ -40,8 +40,8 @@
                             <!-- Display Boards based on user role -->
                             <% if @boards.present? %>
                               <% @boards.each do |board| %>
-                                <% if current_user.admin? || (current_user.manager? && board.team_id == current_user.team_id) || (current_user.agent? && board.team_id == current_user.team_id) %>
-                                  <li class="list-group-item bg-dark text-light">
+                                <% if current_user.admin? || (current_user.manager? && current_user.teams.pluck(:id).include?(board.team_id)) || (current_user.agent? && current_user.teams.pluck(:id).include?(board.team_id)) %>
+                                  <li class="list-group-item bg-dark text-light border-0">
                                     <%= link_to board_path(board), data: { turbo: false }, class: 'nav-link text-light d-flex align-items-center' do %>
                                       <i class="bi bi-folder2-open me-2"></i>
                                       <span><%= board.name %></span>
@@ -73,13 +73,13 @@
                         <div id="adminCollapse" class="accordion-collapse collapse" style="display:none;"> <!-- Initially hidden -->
                           <div class="accordion-body p-0">
                             <ul class="list-group list-group-flush bg-dark">
-                              <li class="list-group-item bg-dark text-light">
+                              <li class="list-group-item bg-dark text-light border-0">
                                 <%= link_to teams_path, data: { turbo: false }, class: 'nav-link text-light d-flex align-items-center' do %>
                                   <i class="bi bi-people-fill me-2"></i>
                                   Teams
                                 <% end %>
                               </li>
-                              <li class="list-group-item bg-dark text-light">
+                              <li class="list-group-item bg-dark text-light border-0">
                                 <%= link_to admin_page_index_path, data: { turbo: false }, class: 'nav-link text-light d-flex align-items-center' do %>
                                   <i class="bi bi-tools me-2"></i>
                                   Admin
@@ -94,7 +94,7 @@
                 <% end %>
 
                 <!-- Sign Out Link -->
-                <li class="nav-item mt-3">
+                <li class="nav-item mt-4">
                   <%= link_to destroy_user_session_path, data: { turbo_method: :delete }, class: 'nav-link text-light d-flex align-items-center' do %>
                     <i class="bi bi-box-arrow-left me-2"></i>
                     Sign Out

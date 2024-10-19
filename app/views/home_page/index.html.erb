@@ -1,35 +1,79 @@
-<!-- app/views/home_page/index.html.erb -->
-<h1>Welcome to the Home Page</h1>
-<h3>Your Tasks</h3>
+<div class="task-content-container">
+  <h1 class="display-4 text-center mb-4">Your Tasks</h1>
+  <% if @tasks.present? %>
+    <div class="accordion" id="tasksAccordion">
+      <% @tasks.each do |task| %>
+        <div class="accordion-item" id="task-<%= task.id %>">
+          <h2 class="accordion-header" id="heading<%= task.id %>">
+            <button class="accordion-button collapsed bg-secondary text-light accordion-toggle" type="button" data-task-id="#collapse<%= task.id %>">
+              <strong><%= task.title %></strong> 
+              : Board: <%= task.board.name %>              
+              | Priority: <%= task.priority.humanize.capitalize %>
+            </button>
+          </h2>
+          <div id="collapse<%= task.id %>" class="accordion-collapse collapse" style="display:none;"> <!-- Initially hidden -->
+            <div class="accordion-body bg-dark text-light">
+              <p><strong>Description:</strong> <%= task.description %></p>
+              <p><strong>Due Date:</strong> <%= task.due_date.strftime("%d %b %Y") %></p>
 
-<% if @tasks.present? %>
-  <div class="accordion" id="tasksAccordion">
-    <% @tasks.each do |task| %>
-      <div class="accordion-item" id="task-<%= task.id %>">
-        <h2 class="accordion-header" id="heading<%= task.id %>">
-          <button class="accordion-button collapsed bg-secondary text-light accordion-toggle" type="button" data-task-id="#collapse<%= task.id %>">
-            <strong><%= task.title %></strong> 
-            - Priority: <%= task.priority.humanize.capitalize %>
-            | Board: <%= task.board.name %>
-          </button>
-        </h2>
-        <div id="collapse<%= task.id %>" class="accordion-collapse collapse" style="display:none;"> <!-- Initially hidden -->
-          <div class="accordion-body bg-dark text-light">
-            <p><strong>Description:</strong> <%= task.description %></p>
-            <p><strong>Due Date:</strong> <%= task.due_date.strftime("%d %b %Y") %></p>
-
-            <!-- Dropdown for updating status -->
-            <p><strong>Status:</strong>
-              <%= form_with model: task, local: true, url: board_tasks_page_path(task.board, task), method: :patch do |f| %>
-                <%= f.select :status, Task.statuses.keys.map { |s| [s.humanize.capitalize, s] }, { selected: task.status }, class: 'form-select bg-secondary text-light' %>
-                <%= f.submit "Update", class: 'btn btn-outline-light mt-2' %>
-              <% end %>
-            </p>
+              <!-- Use the status dropdown partial here -->
+              <div class="d-flex align-items-center">
+                <strong class="me-2">Status:</strong>
+                <%= render 'shared/status_dropdown', task: task %>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    <% end %>
-  </div>
-<% else %>
-  <p class="text-muted">You have no tasks assigned at the moment.</p>
-<% end %>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-muted">You have no tasks assigned at the moment.</p>
+  <% end %>
+</div>
+
+<script>
+  document.addEventListener('turbo:load', function () {
+    
+  // Status dropdown auto-submit on change
+  document.querySelectorAll('.status-dropdown-form select').forEach(function(select) {
+    select.addEventListener('change', function() {
+      this.form.submit();
+    });
+  });
+
+    function expandTaskFromHash() {
+    var taskId = window.location.hash;
+
+    if (taskId) {
+      // Collapse any previously opened accordion items
+      $('.accordion-collapse').slideUp();  // Close any open accordion items
+      $('.accordion-button').addClass('collapsed').removeClass('active');  // Reset all buttons
+
+      var collapseTarget = $(taskId);
+
+      if (collapseTarget.length) {
+        collapseTarget.slideDown(); // Expand the collapseTarget
+        $("html, body").animate(
+          {
+            scrollTop: collapseTarget.offset().top,
+          },
+          1000
+        ); // Smooth scroll to the task
+        // Find and activate the corresponding accordion button
+        $(`button[data-task-id='${taskId}']`).removeClass('collapsed').addClass('active');
+      } else {
+        console.log("Task element not found for ID: " + taskId);
+      }
+    } else {
+      console.log("No task ID found in the URL.");
+    }
+  }
+
+  // Run the expandTaskFromHash function on page load
+  $(window).on("load", expandTaskFromHash);
+
+  // Also listen for hash changes and trigger the expansion
+  window.addEventListener('hashchange', expandTaskFromHash);
+
+  });
+</script>

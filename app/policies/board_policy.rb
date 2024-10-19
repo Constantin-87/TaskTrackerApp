@@ -28,7 +28,8 @@ class BoardPolicy < ApplicationPolicy
       if user.admin?
         scope.all  # Admin sees all boards
       else
-        scope.where(team_id: user.team_id)  # Non-admins see boards for their team
+        # Managers and agents see boards for any of their teams
+        scope.where(team_id: user.teams.pluck(:id))
       end
     end
   end
@@ -36,6 +37,6 @@ class BoardPolicy < ApplicationPolicy
   private
 
   def user_has_access_to_team?
-    (user.manager? || user.agent?) && record.team_id == user.team_id
+    (user.manager? || user.agent?) && user.teams.pluck(:id).include?(record.team_id)
   end
 end

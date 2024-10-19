@@ -5,13 +5,14 @@ class BoardsController < ApplicationController
 
     def index
       @boards = policy_scope(Board)  # Use policy_scope to get the correct boards for the user
-      authorize @boards  # Authorize the collection of boards
+      Rails.logger.info "Fetched boards: #{@boards.pluck(:name)}"
+      authorize Board  # Authorize the collection of boards
     end
 
     def show
       @board = Board.find(params[:id])
       @tasks = @board.tasks
-      @users = User.joins(:team).where(teams: { id: @board.team_id })
+      @users = User.joins(:teams).where(teams: { id: @board.team_id })
       authorize @board
     end
 

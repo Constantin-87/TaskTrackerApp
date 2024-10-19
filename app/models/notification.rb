@@ -14,8 +14,5 @@ class Notification < ApplicationRecord
   # Method to broadcast the notification and mark it as read
   def broadcast_notification
     NotificationChannel.broadcast_to(user, message: self.message)
-
-    # Mark the notification as read after broadcasting to prevent it from being sent again
-    self.update(read: true)
   end
 end

@@ -1,13 +1,13 @@
-<%= content_tag(:div, "", class: "position-fixed bottom-0 end-0 p-3", id: "notification-box", data: { controller: "notification" }) %>
-
-<% if user_signed_in? && current_user.notifications.unread.any? %>
+<%= content_tag(:div, "", class: "position-fixed bottom-0 end-0 p-3", id: "notification-box", data: { controller: "notification" }) do %>
+  <% if user_signed_in? && current_user.notifications.unread.any? %>
     <% current_user.notifications.unread.each do |notification| %>
-        <div class="alert alert-info alert-dismissible fade show" role="alert">
-            <%= notification.message.html_safe %>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+      <div class="alert alert-info alert-dismissible fade show" role="alert" data-notification-id="<%= notification.id %>">
+        <%= notification.message.html_safe %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
 
-        <%# Mark the notification as read after displaying it %>
-        <% notification.update(read: true) %>
+      <%# Mark the notification as read after displaying it %>
+      <% notification.update(read: true) %>
     <% end %>
+  <% end %>
 <% end %>

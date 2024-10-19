@@ -1,0 +1,3 @@
+<%= form_with model: task, local: true, url: board_tasks_page_path(task.board, task), method: :patch, data: { turbo: false }, class: 'priority-dropdown-form' do |f| %>
+  <%= f.select :priority, Task.priorities.keys.map { |p| [p.humanize.capitalize, p] }, { selected: task.priority }, class: 'form-select bg-secondary text-light priority--dropdown', id: "priority-#{task.id}" %>
+<% end %>

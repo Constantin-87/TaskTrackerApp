@@ -1,12 +1,13 @@
-<%= form_with(model: task, url: task.new_record? ? board_tasks_page_index_path(@task.board) : board_tasks_page_path(@task.board, @task), local: true, class: 'bg-dark text-light p-4 rounded shadow') do |form| %>
+<%= form_with(model: task, url: task.new_record? ? board_tasks_page_index_path(@task.board) : board_tasks_page_path(@task.board, @task), local: true, class: 'bg-dark text-light p-4 rounded shadow mx-auto') do |form| %>
+  
   <div class="form-group mb-3">
     <%= form.label :title, class: 'form-label' %>
-    <%= form.text_field :title, class: 'form-control bg-secondary text-light' %>
+    <%= form.text_field :title, class: 'form-control bg-secondary text-light', placeholder: "Enter task title", style: "width: 250px;" %>
   </div>
 
   <div class="form-group mb-3">
     <%= form.label :description, class: 'form-label' %>
-    <%= form.text_area :description, class: 'form-control bg-secondary text-light' %>
+    <%= form.text_area :description, class: 'form-control bg-secondary text-light', rows: 5, placeholder: "Task description", style: "width: 500px;" %>
   </div>
 
   <div class="form-group mb-3">
@@ -16,20 +17,30 @@
 
   <div class="form-group mb-3">
     <%= form.label :status, class: 'form-label' %>
-    <%= form.select :status, Task.statuses.keys.map { |status| [status.humanize, status] }, {}, class: 'form-control bg-secondary text-light' %>
+    <%= form.select :status, Task.statuses.keys.map { |status| [status.humanize, status] }, {}, class: 'form-control bg-secondary text-light', style: "width: 140px;" %>
   </div>
 
   <div class="form-group mb-3">
     <%= form.label :priority, class: 'form-label' %>
-    <%= form.select :priority, Task.priorities.keys.map { |priority| [priority.humanize, priority] }, {}, class: 'form-control bg-secondary text-light' %>
+    <%= form.select :priority, Task.priorities.keys.map { |priority| [priority.humanize, priority] }, {}, class: 'form-control bg-secondary text-light', style: "width: 85px;" %>
   </div>
 
   <div class="form-group mb-3">
-    <%= form.label :board_id, "Board", class: 'form-label' %>
-    <%= form.collection_select :board_id, Board.all, :id, :name, prompt: "Select a Board", class: 'form-control bg-secondary text-light' %>
+    <div>
+      <%= form.label :board_id, "Board", class: 'form-label' %>
+    </div>
+    <div>
+      <% if current_user.admin? %>
+        <!-- Admins see all boards -->
+        <%= form.collection_select :board_id, Board.all, :id, :name, prompt: "Select a Board", class: 'form-control bg-secondary text-light' %>
+      <% elsif current_user.manager? %>
+        <!-- Managers see boards for their teams -->
+        <%= form.collection_select :board_id, Board.where(team_id: current_user.teams.pluck(:id)), :id, :name, prompt: "Select a Board", class: 'form-control bg-secondary text-light' %>
+      <% end %>
+    </div>    
   </div>
 
   <div class="actions">
-    <%= form.submit task.new_record? ? 'Create Task' : 'Update Task', class: 'btn btn-primary' %>
+    <%= form.submit task.new_record? ? 'Create Task' : 'Update Task', class: 'btn btn-primary mt-4' %>
   </div>
 <% end %>

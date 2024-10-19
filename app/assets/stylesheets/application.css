@@ -14,13 +14,98 @@
  *= require_self
  */
 
- #sidebarMenu {
-    height: 100vh;
-    overflow-y: auto;
-  }
+#sidebarMenu {
+  height: 100vh;
+  overflow-y: auto;
+  padding-top: 20px !important;
+}
 
-  .main-content {
-    flex-grow: 1;
-    min-height: 100vh;
-    overflow-y: auto;
-  }
+.main-content {
+  flex-grow: 1;
+  min-height: 100vh;
+  overflow-y: auto;
+}
+
+main.col-md-10.ms-auto {
+  padding-left: 0 !important;
+  padding-right: 50px !important;
+  padding-top: 20px !important;
+}
+
+.flash-message {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1050;
+  background-color: rgba(
+    0,
+    123,
+    255,
+    0.85
+  ); /* More visible background color (blue with slight transparency) */
+  color: #fff; /* White text for contrast */
+  padding: 20px 40px; /* Increased padding */
+  border-radius: 10px;
+  font-size: 1.2rem; /* Larger font size */
+  opacity: 1;
+  transition: opacity 0.5s, transform 0.5s;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* Shadow for better visibility */
+}
+
+.flash-message.fade-out {
+  opacity: 0;
+  transform: translate(-50%, -50px); /* Fade upwards */
+}
+
+.form-control::placeholder {
+  color: rgba(255, 255, 255, 0.7); /* Lighten the placeholder text */
+  opacity: 1; /* Ensure it's visible in all browsers */
+}
+
+.accordion-button {
+  padding: 0.626rem 1rem !important; /* Reduce the padding */
+}
+
+.btn-outline-warning,
+.btn-outline-danger {
+  padding: 0.25rem 0.5rem; /* Adjust these values as needed */
+  font-size: 0.875rem; /* Optional: Reduce font size for a more compact look */
+}
+
+.board-description {
+  width: 800px;
+  max-width: 800px; /* Ensures it doesn't exceed 500px */
+  overflow: hidden; /* Hides content that overflows the width */
+  white-space: normal; /* Allows text wrapping within the container */
+  text-align: left;
+}
+
+.task-content-container {
+  width: 80%; /* Reducing the width by 20% */
+  margin-left: 0; /* Align to the left */
+  margin-right: auto;
+}
+
+.status-dropdown,
+.priority--dropdown,
+.assigned-user-dropdown {
+  height: 30px;
+  font-size: 14px; /* Adjusted font size */
+  line-height: 1.5; /* Adjust line height to prevent text from getting cut off */
+  padding: 2px 8px; /* Ensure proper padding inside the dropdown */
+  display: inline-block;
+  vertical-align: middle; /* Aligns with other text on the same line */
+}
+
+.status-dropdown {
+  width: 140px;
+}
+
+.priority--dropdown {
+  width: 90px;
+}
+
+.assigned-user-dropdown {
+  width: 200px;
+}

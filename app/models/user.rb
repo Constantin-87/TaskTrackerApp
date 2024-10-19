@@ -6,7 +6,7 @@ class User < ApplicationRecord
 
   enum role: { agent: 0, manager: 1, admin: 2 }
 
-  belongs_to :team, optional: true
+  has_and_belongs_to_many :teams, optional: true
 
   has_many :tasks
   has_many :notifications, dependent: :destroy

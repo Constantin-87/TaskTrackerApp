@@ -3,13 +3,13 @@
     <!-- Name input -->
     <div class="form-group mb-3">
       <%= form.label :name, class: 'form-label' %>
-      <%= form.text_field :name, class: 'form-control bg-secondary text-light'  %>
+      <%= form.text_field :name, class: 'form-control bg-secondary text-light', placeholder: "Enter board title", style: "width: 250px;"  %>
     </div>
 
     <!-- Description input -->
     <div class="form-group mb-3">
       <%= form.label :description, class: 'form-label' %>
-      <%= form.text_area :description, class: 'form-control bg-secondary text-light', rows: 4  %>
+      <%= form.text_area :description, class: 'form-control bg-secondary text-light', rows: 5, placeholder: "Board description", style: "width: 500px;"  %>
     </div>
 
     <!-- Team selection -->
@@ -21,5 +21,6 @@
     <div class="actions">
       <%= form.submit 'Create Board', class: 'btn btn-primary' %>
     </div>
+
 <% end %>
 

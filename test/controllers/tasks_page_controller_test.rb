@@ -53,7 +53,6 @@ class TasksPageControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Task was successfully created.", flash[:notice]
   end
 
-
   # Test for task creation as manager
   test "should create task as manager" do
     sign_in @manager_user

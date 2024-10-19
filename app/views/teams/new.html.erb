@@ -1,4 +1,4 @@
-<h1><%= @team.new_record? ? 'Create New Team' : 'Edit Team' %></h1>
+<h1>Create New Team</h1>
 
 <div id="form_errors">
   <!-- This div will be replaced with error messages -->
@@ -7,4 +7,4 @@
 
 <%= render 'form', team: @team %>
 
-<%= link_to 'Back to Teams', teams_path, class: 'btn btn-secondary mt-3' %>
+<%= link_to 'Back to Teams', teams_path, class: 'btn btn-secondary mt-2' %>

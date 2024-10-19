@@ -1,9 +1,29 @@
 <h1 class="display-4 text-center mb-4"><%= @board.name %></h1>
 
-<div class="d-flex justify-content-between align-items-center mb-3">
+<!-- Collapsible Board Description -->
+<div class="board-description mb-3" >
+  <h5>Board Description:</h5>
+  <div id="boardDescriptionCollapsed" class="collapsed-text">
+    <%= truncate(@board.description, length: 100) %>... <i class="bi bi-chevron-down"></i>
+  </div>
+  <div id="boardDescriptionExpanded" class="expanded-text" style="display: none;">
+    <%= @board.description %> <i class="bi bi-chevron-up"></i>
+  </div>
+</div>
+
+<div class="d-flex align-items-center mb-3">
   <% if current_user.admin? || current_user.manager? %>
-    <%= link_to 'Add New Task', new_board_tasks_page_path(@board), class: 'btn btn-success' %>
+    <%= link_to 'Add New Task', new_board_tasks_page_path(@board), class: 'btn btn-success me-3' %> <!-- Added margin-end (me-3) -->
   <% end %>
+
+  <!-- Delete Board Button, visible only to admins -->
+  <% if current_user.admin? %>    
+    <% if @board.tasks.any? %>
+      <%= link_to 'Delete Board', board_path(@board), method: :delete, data: { confirm: "#{@board.name} board has tasks. Deleting this board will also delete all associated tasks. Are you sure you want to continue?" }, class: 'btn btn-danger' %>
+    <% else %>
+      <%= link_to 'Delete Board', board_path(@board), method: :delete, data: { confirm: "Are you sure you want to delete #{@board.name} board?" }, class: 'btn btn-danger' %>
+    <% end %>    
+  <% end %>  
 </div>
 
 <table class="table table-hover table-bordered table-dark">
@@ -22,20 +42,31 @@
     <% @tasks.each do |task| %>
       <tr>
         <td><%= task.title %></td>
-        <td><%= task.description %></td>
-        <td><%= task.due_date %></td>
-        <td><%= task.status.humanize %></td>
-        <td><%= task.priority.humanize %></td>
 
-        <!-- Dropdown to assign user -->
+        <!-- Truncated Description with Tooltip -->
         <td>
-          <%= form_with(model: task, url: board_tasks_page_path(@board, task), method: :patch, local: true, class: 'd-inline') do |f| %>
-            <div class="input-group">
-              <%= f.collection_select :user_id, @users, :id, :email, prompt: "Select user", class: 'form-select bg-secondary text-light' %>
-              <button class="btn btn-sm btn-outline-light">Assign</button>
-            </div>
-          <% end %>
+          <span data-bs-toggle="tooltip" data-bs-placement="top" title="<%= task.description %>">
+            <%= truncate(task.description, length: 60) %>
+          </span>
         </td>
+
+        <td><%= task.due_date %></td>
+
+        <!-- Render the status dropdown partial -->
+        <td>
+          <%= render partial: 'shared/status_dropdown', locals: { task: task } %>
+        </td>
+        
+        <!-- Render the priority dropdown partial -->
+        <td>
+          <%= render partial: 'shared/priority_dropdown', locals: { task: task } %>
+        </td>
+
+        <!-- Render the assigned user dropdown partial -->
+        <td>
+          <%= render partial: 'shared/assigned_user_dropdown', locals: { task: task } %>
+        </td>
+
 
         <td class="text-center">
           <%= link_to 'Edit', edit_board_tasks_page_path(@board, task), class: 'btn btn-outline-warning me-2' %>
@@ -46,13 +77,52 @@
   </tbody>
 </table>
 
-<!-- Delete Board Button, visible only to admins or managers -->
-<% if current_user.admin? || current_user.manager? %>
-  <div class="mt-3">
-    <% if @board.tasks.any? %>
-  <%= link_to 'Delete Board', board_path(@board), method: :delete, data: { confirm: "#{@board.name} board has tasks. Deleting this board will also delete all associated tasks. Are you sure you want to continue?" }, class: 'btn btn-danger' %>
-<% else %>
-  <%= link_to 'Delete Board', board_path(@board), method: :delete, data: { confirm: "Are you sure you want to delete #{@board.name} board?" }, class: 'btn btn-danger' %>
-<% end %>
-  </div>
-<% end %>
+
+<script>
+  document.addEventListener('turbo:load', function () {
+    // Toggle Description
+    const collapsed = document.getElementById('boardDescriptionCollapsed');
+    const expanded = document.getElementById('boardDescriptionExpanded');
+
+    collapsed.addEventListener('click', function() {
+      collapsed.style.display = 'none';
+      expanded.style.display = 'block';
+    });
+
+    expanded.addEventListener('click', function() {
+      expanded.style.display = 'none';
+      collapsed.style.display = 'block';
+    });
+
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+
+    // Priority dropdown auto-submit on change
+    document.querySelectorAll('.priority-dropdown-form select').forEach(function(select) {
+      select.addEventListener('change', function() {
+        // Submit the form when the priority is changed
+        this.form.submit();
+      });
+    });
+
+    // Status dropdown auto-submit on change
+    document.querySelectorAll('.status-dropdown-form select').forEach(function(select) {
+      select.addEventListener('change', function() {
+        // Submit the form when the status is changed
+        this.form.submit();
+      });
+    });
+
+    // Assigned user dropdown auto-submit on change
+    document.querySelectorAll('.assigned-user-dropdown-form select').forEach(function(select) {
+      select.addEventListener('change', function() {
+        // Submit the form when the assigned user is changed
+        this.form.submit();
+      });
+    });
+
+  });
+</script>

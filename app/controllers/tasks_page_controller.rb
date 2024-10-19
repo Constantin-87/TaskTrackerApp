@@ -3,14 +3,16 @@ class TasksPageController < ApplicationController
     after_action :verify_authorized
 
     def new
-      @task = Task.new
-      @task.board_id = params[:board_id]  # Preload the board_id
-      authorize @task
+      @board = Board.find(params[:board_id])  # Find the board using the board_id parameter
+      @task = @board.tasks.new  # Initialize a new task associated with the board
+      authorize @board  # Authorize the board
+      authorize @task  # Authorize the task
     end
 
     def create
       @board = Board.find(params[:board_id])
       @task = @board.tasks.build(task_params) # Associate the task with the board
+      @task.current_user = current_user # Set the current user performing the change
       authorize @task
 
       # Add observer only if the task is assigned to a user
@@ -30,7 +32,8 @@ class TasksPageController < ApplicationController
 
     def update
       @task = Task.find(params[:id])
-      @board = @task.board # Retrieve the associated board
+      @board = @task.board
+      @task.current_user = current_user
       authorize @task
 
       # Add observer only if the task is assigned to a user
@@ -52,6 +55,7 @@ class TasksPageController < ApplicationController
     def destroy
       @task = Task.find(params[:id])
       @board = @task.board
+      @task.current_user = current_user
       authorize @task
 
       # Add observer only if the task is assigned to a user

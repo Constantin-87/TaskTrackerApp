@@ -11,31 +11,35 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload' %>
     <%= javascript_importmap_tags %>
+  
+    </head>
 
-  </head>
+    <body class="bg-dark text-light">
+      <div class="container-fluid">
+        <div class="row">
 
-  <body class="bg-dark text-light">
-    <div class="container-fluid d-flex <%= user_signed_in? ? '' : ' justify-content-center align-items-center' %>" style="<%= user_signed_in? ? '' : 'min-height: 100vh;' %>">
-      <div class="row w-100">
-      
-        <!-- Left-side navigation menu for signed-in users -->
-        <%= render 'shared/sidebar' if user_signed_in? %>
+          <!-- Left-side navigation menu for signed-in users -->
+          <% if user_signed_in? %>
+            <%= render 'shared/sidebar' %>
+          <% end %>
 
-        <!-- Main content area wrapped inside a container for better control -->
-        <main class="<%= user_signed_in? ? 'col-md-9 ms-sm-auto col-lg-10 px-md-4' : 'w-100 d-flex justify-content-center align-items-center' %>">
-          <div class="container mt-4"> <!-- Apply container and margin -->
-            <div class="row justify-content-left"> <!-- Center the content horizontally -->
-              <div class="col-lg-10 col-md-12"> <!-- Control the width using Bootstrap column classes -->
-                <%= yield %>
-                <!-- Floating Notification Box -->
-                <%= render 'shared/notifications' if user_signed_in? %>
+
+          <!-- Main content area with full width for users who are not signed in -->
+          <main class="<%= user_signed_in? ? 'col-md-10 ms-auto' : 'w-100 d-flex justify-content-center align-items-center' %>">
+            
+              <div class="row justify-content-center"> <!-- Center the content horizontally -->
+                <div class="col-lg-12"> <!-- Allow the content to span full width -->
+                  <%= render 'shared/flash_messages' %>
+                  <%= yield %>
+                  <!-- Floating Notification Box -->
+                  <%= render 'shared/notifications' if user_signed_in? %>
+                </div>
               </div>
-            </div>
-          </div>
-        </main>
+            
+          </main>
 
+        </div>
       </div>
-    </div>
 
     <!-- Bootstrap JS, Popper.js, and jQuery CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
@@ -43,7 +47,6 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <%= javascript_include_tag 'common', 'data-turbo-track': 'reload' %>
-
   </body>
 
 </html>
