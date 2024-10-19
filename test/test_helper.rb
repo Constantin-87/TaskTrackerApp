@@ -12,4 +12,10 @@ module ActiveSupport
 
     # Add more helper methods to be used by all tests here...
   end
+
+  class ActiveSupport::TestCase
+    # Disable parallel tests
+    self.use_transactional_tests = true
+    parallelize(workers: 1)  # Run tests serially (disable parallelization)
+  end
 end

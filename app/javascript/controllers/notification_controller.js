@@ -25,9 +25,6 @@ export default class extends Controller {
 
       notificationBox.appendChild(newNotification);
 
-      // Mark as read when shown
-      this.markAsRead(data.id);
-
       // Auto-dismiss after 5 seconds
       setTimeout(() => {
         if (newNotification) {
@@ -44,7 +41,6 @@ export default class extends Controller {
     const notifications = document.querySelectorAll("#notification-box .alert");
     notifications.forEach((notification) => {
       const notificationId = notification.getAttribute("data-notification-id");
-      this.markAsRead(notificationId);
 
       // Auto-dismiss after 5 seconds
       setTimeout(() => {
@@ -56,16 +52,5 @@ export default class extends Controller {
         }
       }, 5000);
     });
-  }
-
-  markAsRead(notificationId) {
-    if (notificationId) {
-      fetch(`/notifications/${notificationId}/mark_as_read`, {
-        method: "PATCH",
-        headers: {
-          "X-CSRF-Token": document.querySelector("[name='csrf-token']").content,
-        },
-      });
-    }
   }
 }

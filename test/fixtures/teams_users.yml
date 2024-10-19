@@ -1,0 +1,13 @@
+# test/fixtures/teams_users.yml
+
+admin_team_user:
+  team_id: <%= ActiveRecord::FixtureSet.identify(:adminTeam) %>
+  user_id: <%= ActiveRecord::FixtureSet.identify(:admin_user) %>
+
+manager_team_user:
+  team_id: <%= ActiveRecord::FixtureSet.identify(:managerTeam) %>
+  user_id: <%= ActiveRecord::FixtureSet.identify(:manager_user) %>
+
+agent_team_user:
+  team_id: <%= ActiveRecord::FixtureSet.identify(:agentTeam) %>
+  user_id: <%= ActiveRecord::FixtureSet.identify(:agent_user) %>

@@ -1,25 +1,25 @@
 # test/fixtures/users.yml
 
 admin_user:
+  id: <%= ActiveRecord::FixtureSet.identify(:admin_user) %>
   first_name: "Admin"
   last_name: "User"
   email: "admin@example.com"
   role: "admin"
   encrypted_password: "$2a$12$cy86BBUDZ3RdxpvIsA7VsOjjzEcDr4d.XTwc1YlK1rlK/daKfhZIC"
-  team: adminTeam
 
 manager_user:
+  id: <%= ActiveRecord::FixtureSet.identify(:manager_user) %>
   first_name: "Manager"
   last_name: "User"
   email: "manager@example.com"
   role: "manager"
   encrypted_password: "$2a$12$cy86BBUDZ3RdxpvIsA7VsOjjzEcDr4d.XTwc1YlK1rlK/daKfhZIC"
-  team: managerTeam
 
 agent_user:
+  id: <%= ActiveRecord::FixtureSet.identify(:agent_user) %>
   first_name: "Agent"
   last_name: "User"
   email: "agent@example.com"
   role: "agent"
   encrypted_password: "$2a$12$cy86BBUDZ3RdxpvIsA7VsOjjzEcDr4d.XTwc1YlK1rlK/daKfhZIC"
-  team: agentTeam

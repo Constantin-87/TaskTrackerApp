@@ -4,7 +4,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  enum role: { agent: 0, manager: 1, admin: 2 }
+  enum :role, { agent: 0, manager: 1, admin: 2 }
 
   has_and_belongs_to_many :teams, optional: true
 

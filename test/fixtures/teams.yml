@@ -1,13 +1,16 @@
 # test/fixtures/teams.yml
 
 agentTeam:
+  id: <%= ActiveRecord::FixtureSet.identify(:agentTeam) %>
   name: "Agent Team"
   description: "Handles all the Agents."
 
 managerTeam:
+  id: <%= ActiveRecord::FixtureSet.identify(:managerTeam) %>
   name: "Manager Team"
   description: "Responsible for all Managers."
 
 adminTeam:
+  id: <%= ActiveRecord::FixtureSet.identify(:adminTeam) %>
   name: "Admin Team"
   description: "Responsible for all Admins."

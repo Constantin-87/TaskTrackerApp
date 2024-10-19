@@ -37,6 +37,6 @@ class BoardPolicy < ApplicationPolicy
   private
 
   def user_has_access_to_team?
-    (user.manager? || user.agent?) && user.teams.pluck(:id).include?(record.team_id)
+    user.teams.exists?(id: record.team_id)
   end
 end

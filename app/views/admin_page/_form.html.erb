@@ -26,7 +26,7 @@
 
   <div class="form-group mb-3">
     <%= f.label :password, class: 'form-label' %>
-    <%= f.password_field :password, class: 'form-control bg-secondary text-light', placeholder: user.new_record? ? 'Enter password' : 'Leave empty to keep current password', autocomplete: 'new-password', autocomplete: 'off', style: "width: 300px;" %>
+    <%= f.password_field :password, class: 'form-control bg-secondary text-light', placeholder: user.new_record? ? 'Enter password' : 'Leave empty to keep current password', autocomplete: 'off', style: "width: 300px;" %>
     <% if user.errors[:password].any? %>
       <div class="text-danger"><%= user.errors[:password].first %></div>
     <% end %>
@@ -34,7 +34,7 @@
 
   <div class="form-group mb-3">
     <%= f.label :password_confirmation, class: 'form-label' %>
-    <%= f.password_field :password_confirmation, class: 'form-control bg-secondary text-light', placeholder: user.new_record? ? 'Confirm password' : 'Leave empty to keep current password', autocomplete: 'new-password', autocomplete: 'off', style: "width: 300px;" %>
+    <%= f.password_field :password_confirmation, class: 'form-control bg-secondary text-light', placeholder: user.new_record? ? 'Confirm password' : 'Leave empty to keep current password', autocomplete: 'off', style: "width: 300px;" %>
     <% if user.errors[:password_confirmation].any? %>
       <div class="text-danger"><%= user.errors[:password_confirmation].first %></div>
     <% end %>

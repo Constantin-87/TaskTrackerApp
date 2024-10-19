@@ -99,7 +99,7 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
   test "should create board as admin" do
     log_in_as(@admin_user)
     assert_difference("Board.count") do
-      post boards_path, params: { board: { name: "New Board", description: "Board description", team_id: teams(:agentTeam).id } }
+      post boards_path, params: { board: { name: "New Board", description: "A valid board description", team_id: teams(:agentTeam).id } }
     end
     assert_redirected_to board_path(Board.last)
     assert_equal "Board was successfully created.", flash[:notice]
