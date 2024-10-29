@@ -1,35 +1,27 @@
 # config/routes.rb
 Rails.application.routes.draw do
-  # Devise routes for user authentication
-  devise_for :users
+  # Define routes for the API
+  devise_for :users, controllers: {
+    sessions: 'users/sessions'
+  }
 
-  # Root paths inside the devise_scope
-  devise_scope :user do
-    # Root path for authenticated users, redirects to the home page
-    authenticated :user do
-      root to: "home_page#index", as: :authenticated_root
-    end
+  # Set the root path to a generic API response if needed
+  root to: proc { [200, {}, ['API is live']] }
 
-    # Root path for unauthenticated users, redirects to the login page
-    unauthenticated do
-      root to: "devise/sessions#new", as: :unauthenticated_root
-    end
+  # API routes for boards (under namespace :api)
+  namespace :api do
+    resources :teams, only: [:index, :show, :create, :update, :destroy] 
+    resources :boards, only: [:index, :show, :create, :destroy]
+    resources :tasks, only: [:index, :show, :create, :update, :destroy]  # Add :index here
+    resources :notifications, only: [:index, :update] # For listing notifications and marking them as read
+    resources :users, only: [:index, :show, :create, :update, :destroy]
+    get 'roles', to: 'users#roles'
+    get 'home_page', to: 'home_page#index' # Endpoint for fetching the homepage tasks
   end
 
-  # Admin page routes for managing users (only for admins)
-  resources :admin_page, only: [ :index, :new, :create, :edit, :update, :destroy ]
-
-  # Teams routes (only admins can manage teams)
-  resources :teams, only: [ :index, :new, :create, :edit, :update, :destroy ]
-
-  # Nested tasks routes under boards
-  resources :boards do
-    resources :tasks_page, only: [ :new, :create, :edit, :update, :destroy ]
-  end
-
-  # Home page route (accessible to all logged-in users)
-  resources :home_page, only: [ :index ]
-
-  # A catch-all route to send unhandled requests to the root path
-  match "*path", to: redirect("/"), via: :all
+   # Catch-all route for non-API routes (this will serve the React app)
+   get '*path', to: 'application#frontend_index', constraints: ->(req) { req.format.html? }
+ 
+   # Catch-all route for undefined API routes
+   match "*path", to: proc { [404, {}, ['Route Not Found']] }, via: :all
 end

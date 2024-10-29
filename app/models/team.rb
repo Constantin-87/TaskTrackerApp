@@ -4,4 +4,12 @@ class Team < ApplicationRecord
 
     validates :name, presence: true, length: { minimum: 5 }, uniqueness: true
     validates :description, presence: true, length: { minimum: 10 }
+
+    def users_count
+        users.size
+    end
+
+    def boards_count
+        boards.size
+    end
 end

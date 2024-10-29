@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_18_111101) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_26_053211) do
   create_table "boards", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -19,6 +19,14 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_18_111101) do
     t.string "description"
     t.index ["name"], name: "index_boards_on_name", unique: true
     t.index ["team_id"], name: "index_boards_on_team_id"
+  end
+
+  create_table "jwt_blacklists", force: :cascade do |t|
+    t.string "jti", null: false
+    t.datetime "exp", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["jti"], name: "index_jwt_blacklists_on_jti"
   end
 
   create_table "notifications", force: :cascade do |t|
