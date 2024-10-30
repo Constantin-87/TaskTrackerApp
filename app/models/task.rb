@@ -57,6 +57,7 @@ class Task < ApplicationRecord
 
   def notify_deletion
     return unless user.present?
+    notification_message = "Task '#{title}' has been deleted."
 
     Rails.logger.info "Notify Deletion: Task '#{title}' was deleted"
     # Notify observers of deletion (this can be refactored to ActiveSupport::Notifications)

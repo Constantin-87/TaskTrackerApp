@@ -1,6 +1,6 @@
 require "test_helper"
 
-class HomePageControllerTest < ActionDispatch::IntegrationTest
+class Api::HomePageControllerTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
 
   setup do
@@ -12,30 +12,33 @@ class HomePageControllerTest < ActionDispatch::IntegrationTest
   # Test for logged-in admin access to the home page
   test "should get home page as admin" do
     sign_in @admin_user
-    get home_page_index_path  # Use the correct path for your home page
+    get api_home_page_index_path, headers: { "Content-Type": "application/json" }  # Adjust path if necessary
     assert_response :success
-    assert_not_nil assigns(:tasks)
+    json_response = JSON.parse(response.body)
+    assert json_response["tasks"].present?, "Expected tasks to be present in response"
   end
 
   # Test for logged-in manager access to the home page
   test "should get home page as manager" do
     sign_in @manager_user
-    get home_page_index_path  # Use the correct path for your home page
+    get api_home_page_index_path, headers: { "Content-Type": "application/json" }
     assert_response :success
-    assert_not_nil assigns(:tasks)
+    json_response = JSON.parse(response.body)
+    assert json_response["tasks"].present?, "Expected tasks to be present in response"
   end
 
   # Test for logged-in agent access to the home page
   test "should get home page as agent" do
     sign_in @agent_user
-    get home_page_index_path  # Use the correct path for your home page
+    get api_home_page_index_path, headers: { "Content-Type": "application/json" }
     assert_response :success
-    assert_not_nil assigns(:tasks)
+    json_response = JSON.parse(response.body)
+    assert json_response["tasks"].present?, "Expected tasks to be present in response"
   end
 
   # Test that unauthorized users (not logged in) are redirected to login page
   test "should redirect unauthorized user to login" do
-    get home_page_index_path  # Use the correct path for your home page
+    get api_home_page_index_path, headers: { "Content-Type": "application/json" }
     assert_redirected_to new_user_session_path
   end
 end

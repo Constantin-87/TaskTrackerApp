@@ -9,7 +9,6 @@ class NotificationObserver
     Rails.logger.info "NotificationObserver: Update called for Task #{task.id} with message: #{message}"
       
     if task.user.present?
-      # Generate a link to the task using a path that can be handled by your React frontend.
        # Use `url_for` to construct the full task path with host
        task_link = task_link = "http://localhost:3000/home?task_id=#{task.id}"
 

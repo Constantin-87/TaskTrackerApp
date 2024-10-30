@@ -1,6 +1,8 @@
+# test/controllers/api/boards_controller_test.rb
+
 require "test_helper"
 
-class BoardsControllerTest < ActionDispatch::IntegrationTest
+class Api::BoardsControllerTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
 
   setup do
@@ -17,117 +19,113 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
     sign_in user
   end
 
-  test "should see agent board as agent" do
+  # Agent Tests
+  test "agent should see their own board" do
     log_in_as(@agent_user)
-    get board_path(@agentBoard)
+    get api_board_path(@agentBoard), headers: { "Content-Type": "application/json" }
     assert_response :success
   end
 
-  test "should not see manager board as agent" do
+  test "agent should not see manager's board" do
     log_in_as(@agent_user)
-    get board_path(@managerBoard)
-    assert_redirected_to authenticated_root_path
+    get api_board_path(@managerBoard), headers: { "Content-Type": "application/json" }
+    assert_response :forbidden
   end
 
-  test "should not see admin board as agent" do
+  test "agent should not see admin's board" do
     log_in_as(@agent_user)
-    get board_path(@adminBoard)
-    assert_redirected_to authenticated_root_path
+    get api_board_path(@adminBoard), headers: { "Content-Type": "application/json" }
+    assert_response :forbidden
   end
 
-  test "should see manager board as manager" do
+  # Manager Tests
+  test "manager should see their own board" do
     log_in_as(@manager_user)
-    get board_path(@managerBoard)
+    get api_board_path(@managerBoard), headers: { "Content-Type": "application/json" }
     assert_response :success
   end
 
-  test "should not see agent board as manager" do
+  test "manager should not see agent's board" do
     log_in_as(@manager_user)
-    get board_path(@agentBoard)
-    assert_redirected_to authenticated_root_path
+    get api_board_path(@agentBoard), headers: { "Content-Type": "application/json" }
+    assert_response :forbidden
   end
 
-  test "should not see admin board as manager" do
+  test "manager should not see admin's board" do
     log_in_as(@manager_user)
-    get board_path(@adminBoard)
-    assert_redirected_to authenticated_root_path
+    get api_board_path(@adminBoard), headers: { "Content-Type": "application/json" }
+    assert_response :forbidden
   end
 
-  test "should see agent board as admin" do
+  # Admin Tests
+  test "admin should see agent's board" do
     log_in_as(@admin_user)
-    get board_path(@agentBoard)
+    get api_board_path(@agentBoard), headers: { "Content-Type": "application/json" }
     assert_response :success
   end
 
-  test "should see manager board as admin" do
+  test "admin should see manager's board" do
     log_in_as(@admin_user)
-    get board_path(@managerBoard)
+    get api_board_path(@managerBoard), headers: { "Content-Type": "application/json" }
     assert_response :success
   end
 
-  test "should see admin board as admin" do
+  test "admin should see their own board" do
     log_in_as(@admin_user)
-    get board_path(@adminBoard)
+    get api_board_path(@adminBoard), headers: { "Content-Type": "application/json" }
     assert_response :success
   end
 
-  test "should not get new board form as agent" do
-    log_in_as(@agent_user)
-    get new_board_path
-    assert_redirected_to authenticated_root_path
-    assert_equal "You are not authorized to perform this action.", flash[:alert]
-  end
-
-  test "should not create board as agent" do
+  # Board Creation Tests
+  test "agent should not be able to create a board" do
     log_in_as(@agent_user)
     assert_no_difference("Board.count") do
-      post boards_path, params: { board: { name: "New Board", description: "Board description", team_id: @agent_user.team_id } }
+      # Adjusted parameters for nesting under `board` key
+      post api_boards_path, params: { board: { name: "New Board", description: "Board description", team_id: @agent_user.team_id } }, as: :json
     end
-    assert_redirected_to authenticated_root_path
-    assert_equal "You are not authorized to perform this action.", flash[:alert]
+    assert_response :forbidden
   end
 
-  test "should not destroy board as agent" do
-    log_in_as(@agent_user)
-    assert_no_difference("Board.count") do
-      delete board_path(@agentBoard)
-    end
-    assert_redirected_to authenticated_root_path
-    assert_equal "You are not authorized to perform this action.", flash[:alert]
-  end
-
-  test "should create board as admin" do
+  test "admin should be able to create a board" do
     log_in_as(@admin_user)
     assert_difference("Board.count") do
-      post boards_path, params: { board: { name: "New Board", description: "A valid board description", team_id: teams(:agentTeam).id } }
+      # Adjusted parameters for nesting under `board` key
+      post api_boards_path, params: { board: { name: "New Board", description: "A valid board description", team_id: teams(:agentTeam).id } }, as: :json
     end
-    assert_redirected_to board_path(Board.last)
-    assert_equal "Board was successfully created.", flash[:notice]
+    assert_response :created
   end
 
-  test "should not create board with invalid data as admin" do
+  test "admin should not create board with invalid data" do
     log_in_as(@admin_user)
     assert_no_difference("Board.count") do
-      post boards_path, params: { board: { name: "", description: "", team_id: nil } }
+      # Adjusted parameters for nesting under `board` key
+      post api_boards_path, params: { board: { name: "", description: "", team_id: nil } }, as: :json
     end
     assert_response :unprocessable_entity
   end
 
-  test "should destroy board as admin" do
+  # Deletion Tests
+  test "admin should be able to delete a board" do
     log_in_as(@admin_user)
     assert_difference("Board.count", -1) do
-      delete board_path(@adminBoard)
+      delete api_board_path(@adminBoard), headers: { "Content-Type": "application/json" }
     end
-    assert_redirected_to authenticated_root_path
-    assert_equal "Board was successfully deleted.", flash[:notice]
+    assert_response :ok
   end
 
-  test "should not destroy board as manager" do
+  test "agent should not be able to delete a board" do
+    log_in_as(@agent_user)
+    assert_no_difference("Board.count") do
+      delete api_board_path(@agentBoard), headers: { "Content-Type": "application/json" }
+    end
+    assert_response :forbidden
+  end
+
+  test "manager should not be able to delete a board" do
     log_in_as(@manager_user)
     assert_no_difference("Board.count") do
-      delete board_path(@managerBoard)
+      delete api_board_path(@managerBoard), headers: { "Content-Type": "application/json" }
     end
-    assert_redirected_to authenticated_root_path
-    assert_equal "You are not authorized to perform this action.", flash[:alert]
+    assert_response :forbidden
   end
 end

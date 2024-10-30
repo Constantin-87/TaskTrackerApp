@@ -1,3 +1,0 @@
-<%= form_with model: task, local: true, url: board_tasks_page_path(task.board, task), method: :patch, data: { turbo: false }, class: 'status-dropdown-form' do |f| %>
-  <%= f.select :status, Task.statuses.keys.map { |s| [s.humanize.capitalize, s] }, { selected: task.status }, class: 'form-select bg-secondary text-light status-dropdown', id: "status-#{task.id}" %>
-<% end %>

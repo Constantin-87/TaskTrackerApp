@@ -1,3 +1,0 @@
-<%= form_with model: task, local: true, url: board_tasks_page_path(task.board, task), method: :patch, data: { turbo: false }, class: 'assigned-user-dropdown-form' do |f| %>
-  <%= f.collection_select :user_id, @users, :id, :email, { selected: task.user_id, prompt: "Select user" }, class: 'form-select bg-secondary text-light assigned-user-dropdown', id: "user-#{task.id}" %>
-<% end %>
