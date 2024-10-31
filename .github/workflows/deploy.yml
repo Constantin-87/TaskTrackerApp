@@ -1,0 +1,47 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main  # This triggers the workflow on pushes to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: .ruby-version  # Assumes .ruby-version file in your repo
+        bundler-cache: true
+
+    - name: Install dependencies
+      run: |
+        gem install bundler
+        bundle install
+
+    - name: Deploy to EC2
+      env:
+        EC2_HOST: ${{ secrets.EC2_HOST }}
+        EC2_USER: ${{ secrets.EC2_USER }}
+        EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+        EC2_PATH_BACKEND: ${{ secrets.EC2_PATH_BACKEND }}
+      run: |
+        echo "$EC2_SSH_KEY" > ssh_key.pem
+        chmod 600 ssh_key.pem
+        scp -o StrictHostKeyChecking=no -i ssh_key.pem -r . "${EC2_USER}@${EC2_HOST}:${EC2_PATH_BACKEND}"
+        ssh -o StrictHostKeyChecking=no -i ssh_key.pem "${EC2_USER}@${EC2_HOST}" << EOF
+          cd ${EC2_PATH_BACKEND}
+          bundle install
+          RAILS_ENV=production bundle exec rake assets:precompile
+          RAILS_ENV=production bundle exec rake db:migrate
+          sudo systemctl restart nginx  # Restart Nginx to load latest changes
+        EOF
+      shell: bash
+
+    - name: Clean up
+      run: rm -f ssh_key.pem
