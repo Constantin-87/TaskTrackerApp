@@ -9,12 +9,12 @@ default: &default
 
 development:
   <<: *default
-  database: tasktracker-development # Local development database
+  database: <%= ENV["DB_NAME"] %> # Local development database
 
 test:
   <<: *default
-  database: tasktracker-test # Test environment database
+  database: <%= ENV["DB_NAME"] %> # Test environment database
 
 production:
   <<: *default
-  database: tasktracker-production # Separate database for production
+  database: <%= ENV["DB_NAME"] %> # Separate database for production
