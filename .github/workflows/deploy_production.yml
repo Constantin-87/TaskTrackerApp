@@ -1,0 +1,47 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main  # Only runs when code is pushed to main
+
+jobs:
+  deploy-production:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - name: Install dependencies
+        run: |
+          gem install bundler
+          bundle install
+
+      - name: Deploy to Production EC2
+        env:
+          EC2_HOST: ${{ vars.PROD_EC2_HOST }}
+          EC2_USER: ${{ vars.EC2_USER }}
+          EC2_SSH_KEY: ${{ secrets.SSH_KEY }}
+          EC2_PATH_BACKEND: ${{ vars.EC2_PATH_BACKEND }}
+        run: |
+          echo "$EC2_SSH_KEY" > ssh_key.pem
+          chmod 600 ssh_key.pem
+          scp -o StrictHostKeyChecking=no -i ssh_key.pem -r . "${EC2_USER}@${EC2_HOST}:${EC2_PATH_BACKEND}"
+          ssh -o StrictHostKeyChecking=no -i ssh_key.pem "${EC2_USER}@${EC2_HOST}" << EOF
+            cd ${EC2_PATH_BACKEND}
+            bundle install
+            RAILS_ENV=production bundle exec rake assets:precompile
+            RAILS_ENV=production bundle exec rake db:migrate
+            sudo systemctl restart nginx
+          EOF
+        shell: bash
+
+      - name: Clean up
+        run: rm -f ssh_key.pem
