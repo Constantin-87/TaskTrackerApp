@@ -50,7 +50,7 @@ jobs:
             bundle config set clean true
             bundle config set deployment true
             bundle install
-            RAILS_ENV=test bundle exec rake db:migrate --trace
+            RAILS_ENV=test bundle exec rails db:migrate || (RAILS_ENV=test bundle exec rails db:create db:migrate)
             sudo systemctl restart nginx
           EOF
         shell: bash
