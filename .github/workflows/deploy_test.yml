@@ -46,7 +46,10 @@ jobs:
             export DB_USER=${DB_USER}
             export DB_PASSWORD=${DB_PASSWORD}
             export DB_NAME=${DB_NAME}
-            bundle install --deployment --clean
+            bundle config set path 'vendor/bundle'
+            bundle config set clean true
+            bundle config set deployment true
+            bundle install
             RAILS_ENV=test bundle exec rake assets:precompile
             RAILS_ENV=test bundle exec rake db:migrate
             sudo systemctl restart nginx
