@@ -34,7 +34,7 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }} # Database password for AWS RDS
           EC2_SSH_KEY: ${{ secrets.SSH_KEY }}
           DB_NAME: tasktracker-test # Test database name
-         run: |
+        run: |
           echo "$EC2_SSH_KEY" > ssh_key.pem
           chmod 600 ssh_key.pem
           # Use rsync to transfer files with exclusion
