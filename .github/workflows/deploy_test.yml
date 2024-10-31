@@ -24,7 +24,7 @@ jobs:
           gem install bundler
           bundle install
 
-       - name: Deploy to Test EC2
+      - name: Deploy to Test EC2
         env:
           EC2_HOST: ${{ vars.TEST_EC2_HOST }}
           EC2_USER: ${{ vars.EC2_USER }}
