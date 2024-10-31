@@ -29,24 +29,28 @@ jobs:
           EC2_HOST: ${{ vars.TEST_EC2_HOST }}
           EC2_USER: ${{ vars.EC2_USER }}
           EC2_PATH_BACKEND: ${{ vars.EC2_PATH_BACKEND }}
-          DB_HOST: ${{ vars.TEST_DB_HOST }} # Endpoint for AWS RDS test DB
-          DB_USER: ${{ vars.DB_USER }} # Database user for AWS RDS
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }} # Database password for AWS RDS
+          DB_HOST: ${{ vars.TEST_DB_HOST }}
+          DB_USER: ${{ vars.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: tasktracker-test
           EC2_SSH_KEY: ${{ secrets.SSH_KEY }}
-          DB_NAME: tasktracker-test # Test database name
         run: |
           echo "$EC2_SSH_KEY" > ssh_key.pem
           chmod 600 ssh_key.pem
-          scp -o StrictHostKeyChecking=no -i ssh_key.pem -r * "${EC2_USER}@${EC2_HOST}:${EC2_PATH_BACKEND}"
+          # Use rsync to transfer files with additional options to skip permissions
+          rsync -avz --no-perms --no-owner --chmod=755 --no-group --exclude 'vendor' --exclude 'node_modules' --exclude 'log' --exclude '.git' --exclude 'tmp' -e "ssh -i ssh_key.pem -o StrictHostKeyChecking=no" . "${EC2_USER}@${EC2_HOST}:${EC2_PATH_BACKEND}"
           ssh -o StrictHostKeyChecking=no -i ssh_key.pem "${EC2_USER}@${EC2_HOST}" << EOF
+            set -e
             cd ${EC2_PATH_BACKEND}
-            export DB_HOST=${DB_HOST}                  # Set DB environment variables for Rake tasks
+            export DB_HOST=${DB_HOST}
             export DB_USER=${DB_USER}
             export DB_PASSWORD=${DB_PASSWORD}
             export DB_NAME=${DB_NAME}
+            bundle config set path 'vendor/bundle'
+            bundle config set clean true
+            bundle config set deployment true
             bundle install
-            RAILS_ENV=test bundle exec rake assets:precompile
-            RAILS_ENV=test bundle exec rake db:migrate
+            RAILS_ENV=test bundle exec rake db:migrate --trace
             sudo systemctl restart nginx
           EOF
         shell: bash
