@@ -19,9 +19,6 @@ source "https://rubygems.org"
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.2.1"
 
-# Use sqlite3 as the database for Active Record
-gem "sqlite3", ">= 1.4"
-
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 
@@ -63,3 +60,4 @@ gem "pundit", "~> 2.4"
 gem 'rack-cors', require: 'rack/cors'
 gem 'devise-jwt'
 gem 'faye-websocket'
+gem 'mysql2', '~> 0.5.2'
