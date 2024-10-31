@@ -33,7 +33,7 @@ jobs:
         run: |
           echo "$EC2_SSH_KEY" > ssh_key.pem
           chmod 600 ssh_key.pem
-          scp -o StrictHostKeyChecking=no -i ssh_key.pem -r . "${EC2_USER}@${EC2_HOST}:${EC2_PATH_BACKEND}"
+          scp -o StrictHostKeyChecking=no -i ssh_key.pem -r * "${EC2_USER}@${EC2_HOST}:${EC2_PATH_BACKEND}"
           ssh -o StrictHostKeyChecking=no -i ssh_key.pem "${EC2_USER}@${EC2_HOST}" << EOF
             cd ${EC2_PATH_BACKEND}
             bundle install
