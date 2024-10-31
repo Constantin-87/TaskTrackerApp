@@ -38,7 +38,7 @@ jobs:
           echo "$EC2_SSH_KEY" > ssh_key.pem
           chmod 600 ssh_key.pem
           # Use rsync to transfer files with exclusion
-          rsync -avz --exclude 'vendor/bundle' -e "ssh -i ssh_key.pem -o StrictHostKeyChecking=no" . "${EC2_USER}@${EC2_HOST}:${EC2_PATH_BACKEND}"
+          rsync -avz --exclude 'vendor' --exclude 'node_modules' --exclude 'test' --exclude '.git' --exclude 'log' -e "ssh -i ssh_key.pem -o StrictHostKeyChecking=no" . "${EC2_USER}@${EC2_HOST}:${EC2_PATH_BACKEND}" || true
           ssh -o StrictHostKeyChecking=no -i ssh_key.pem "${EC2_USER}@${EC2_HOST}" << EOF
             cd ${EC2_PATH_BACKEND}
             export DB_HOST=${DB_HOST}                  # Set DB environment variables for Rake tasks
