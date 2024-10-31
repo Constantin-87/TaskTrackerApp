@@ -24,7 +24,7 @@ jobs:
           gem install bundler
           bundle install
 
-      - name: Deploy to Test EC2
+       - name: Deploy to Test EC2
         env:
           EC2_HOST: ${{ vars.TEST_EC2_HOST }}
           EC2_USER: ${{ vars.EC2_USER }}
@@ -37,15 +37,14 @@ jobs:
         run: |
           echo "$EC2_SSH_KEY" > ssh_key.pem
           chmod 600 ssh_key.pem
-          # Use rsync to transfer files with exclusion
-          rsync -avz --exclude 'vendor' --exclude 'node_modules' --exclude 'log' --exclude '.git' --exclude 'tmp' -e "ssh -i ssh_key.pem -o StrictHostKeyChecking=no" . "${EC2_USER}@${EC2_HOST}:${EC2_PATH_BACKEND}"
+          # Use rsync to transfer files with additional options to skip permissions
+          rsync -avz --no-perms --no-owner --no-group --exclude 'vendor' --exclude 'node_modules' --exclude 'log' --exclude '.git' --exclude 'tmp' -e "ssh -i ssh_key.pem -o StrictHostKeyChecking=no" . "${EC2_USER}@${EC2_HOST}:${EC2_PATH_BACKEND}"
           ssh -o StrictHostKeyChecking=no -i ssh_key.pem "${EC2_USER}@${EC2_HOST}" << EOF
             cd ${EC2_PATH_BACKEND}
             export DB_HOST=${DB_HOST}
             export DB_USER=${DB_USER}
             export DB_PASSWORD=${DB_PASSWORD}
             export DB_NAME=${DB_NAME}
-            # Clean and install gems without cache
             bundle install --deployment --clean
             RAILS_ENV=test bundle exec rake assets:precompile
             RAILS_ENV=test bundle exec rake db:migrate
