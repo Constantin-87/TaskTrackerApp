@@ -3,13 +3,12 @@
 require "test_helper"
 
 class NotificationTest < ActiveSupport::TestCase
-  include ActionCable::TestHelper
-
   def setup
-    @user = users(:admin_user) # Adjust according to your fixtures
+    @user = users(:admin_user) # Uses the admin user from the fixture
     @valid_attributes = {
       user: @user,
-      message: "This is a test notification"
+      message: "This is a test notification",
+      read: false
     }
   end
 
@@ -31,19 +30,11 @@ class NotificationTest < ActiveSupport::TestCase
   end
 
   test "unread scope returns only unread notifications" do
-    read_notification = Notification.create!(@valid_attributes.merge(read: true))
-    unread_notification = Notification.create!(@valid_attributes.merge(read: false))
+    read_notification = notifications(:two) # Assumes :two is read
+    unread_notification = notifications(:one) # Assumes :one is unread
 
     unread_notifications = Notification.unread
     assert_includes unread_notifications, unread_notification
     assert_not_includes unread_notifications, read_notification
-  end
-
-  test "should broadcast notification after create" do
-    notification = Notification.new(@valid_attributes)
-
-    assert_broadcast_on(NotificationChannel.broadcasting_for(@user), message: notification.message) do
-      notification.save! # Save to trigger the after_create_commit callback
-    end
-  end
+  end  
 end

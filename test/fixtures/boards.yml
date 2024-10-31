@@ -1,15 +1,17 @@
-# test/fixtures/boards.yml
 agentBoard:
-  name: "agent Board"
+  id: <%= ActiveRecord::FixtureSet.identify(:agentBoard) %>
+  name: "Agent Board"
   description: "This is board one."
-  team: agentTeam # Reference a team fixture
+  team: agentTeam # References the team fixture
 
 managerBoard:
-  name: "manager Board"
+  id: <%= ActiveRecord::FixtureSet.identify(:managerBoard) %>
+  name: "Manager Board"
   description: "This is board two."
-  team: managerTeam # Reference another team fixture
+  team: managerTeam # References another team fixture
 
 adminBoard:
-  name: "adminBoard"
-  description: "This is board two."
-  team: adminTeam # Reference another team fixture
+  id: <%= ActiveRecord::FixtureSet.identify(:adminBoard) %>
+  name: "Admin Board"
+  description: "This is board three."
+  team: adminTeam # References the admin team fixture

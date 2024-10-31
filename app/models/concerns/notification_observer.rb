@@ -5,7 +5,7 @@ class NotificationObserver
   include Singleton
   include Rails.application.routes.url_helpers
 
-  def notify(message, task)
+  def update(message, task)
     Rails.logger.info "NotificationObserver: Update called for Task #{task.id} with message: #{message}"
       
     if task.user.present?

@@ -52,7 +52,7 @@ class Task < ApplicationRecord
     # Notify observers with the combined message
     Rails.logger.info "Notify Changes: #{notification_message}"
     changed
-    NotificationObserver.instance.notify(notification_message, self)
+    NotificationObserver.instance.update(notification_message, self)
   end
 
   def notify_deletion
@@ -62,7 +62,7 @@ class Task < ApplicationRecord
     Rails.logger.info "Notify Deletion: Task '#{title}' was deleted"
     # Notify observers of deletion (this can be refactored to ActiveSupport::Notifications)
     changed
-    NotificationObserver.instance.notify(notification_message, self)
+    NotificationObserver.instance.update(notification_message, self)
   end
 
   def self_update?

@@ -1,3 +1,5 @@
+# test/models/task_test.rb
+
 require "test_helper"
 
 class TaskTest < ActiveSupport::TestCase
@@ -68,13 +70,12 @@ class TaskTest < ActiveSupport::TestCase
 
   test "should notify changes after save when not self update" do
     task = Task.new(@valid_attributes)
-    task.current_user = users(:manager_user) # Use an actual user fixture
+    task.current_user = users(:manager_user) # Different user to trigger notification
 
-    # Use the actual NotificationObserver
-    task.add_observer(NotificationObserver.new)
-
+    # Add observer and save the task with an updated title
+    task.add_observer(NotificationObserver.instance)
     task.title = "Updated Title"
-
+    
     assert_difference "Notification.count", 1 do
       task.save
     end
@@ -82,11 +83,11 @@ class TaskTest < ActiveSupport::TestCase
 
   test "should not notify changes after save when self update" do
     task = Task.new(@valid_attributes)
-    task.current_user = @user
+    task.current_user = @user # Same user, should prevent notification
 
-    task.add_observer(NotificationObserver.new)
-
+    task.add_observer(NotificationObserver.instance)
     task.title = "Updated Title"
+    
     assert_no_difference "Notification.count" do
       task.save
     end
@@ -94,9 +95,10 @@ class TaskTest < ActiveSupport::TestCase
 
   test "should notify deletion when not self update" do
     task = Task.create!(@valid_attributes)
-    task.current_user = users(:manager_user) # Use an actual user fixture
+    task.current_user = users(:manager_user)
 
-    task.add_observer(NotificationObserver.new)
+    task.add_observer(NotificationObserver.instance)
+    
     assert_difference "Notification.count", 1 do
       task.destroy
     end
@@ -104,9 +106,10 @@ class TaskTest < ActiveSupport::TestCase
 
   test "should not notify deletion when self update" do
     task = Task.create!(@valid_attributes)
-    task.current_user = @user
+    task.current_user = @user # Same user, should prevent notification
 
-    task.add_observer(NotificationObserver.new)
+    task.add_observer(NotificationObserver.instance)
+    
     assert_no_difference "Notification.count" do
       task.destroy
     end

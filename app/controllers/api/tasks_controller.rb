@@ -51,6 +51,7 @@ module Api
     end    
 
     def create
+      authorize Task
       # Ensure board_id is provided in the params
       unless params[:task][:board_id].present?
         render json: { errors: ["Board must be selected"] }, status: :unprocessable_entity and return
@@ -65,9 +66,10 @@ module Api
       task.current_user = current_user
 
       # Add an observer if user is present
-      task.add_observer(NotificationObserver.new) if task.user.present?
+      task.add_observer(NotificationObserver.instance) if task.user.present? 
 
       if task.save
+        NotificationObserver.instance.update("Task created", task)
         render json: { task: task }, status: :created
       else
         render json: { errors: task.errors.full_messages }, status: :unprocessable_entity
@@ -81,15 +83,11 @@ module Api
 
     def update
       task = Task.find(params[:id])
+      authorize task
       task.current_user = current_user
     
-      # Log final parameters for verification
-      Rails.logger.info "Received update parameters: #{params[:task]}"
-      Rails.logger.info "Final task parameters before update: #{task_params}"
-    
       if task.update(task_params)
-        Rails.logger.info "Task updated successfully with status: #{task.status}"
-        task.add_observer(NotificationObserver.new) if task.user_id_changed?
+        NotificationObserver.instance.update("Task updated", task)
         render json: { task: task }, status: :ok
       else
         Rails.logger.error "Task update failed with errors: #{task.errors.full_messages}"
@@ -99,6 +97,8 @@ module Api
 
     def destroy
       task = Task.find(params[:id])
+      authorize task
+      NotificationObserver.instance.update("Task deleted", task)
       task.destroy
       render json: { message: "Task deleted successfully" }, status: :ok
     end

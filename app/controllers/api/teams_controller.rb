@@ -18,7 +18,6 @@ module Api
       @team = Team.new(team_params)
       authorize @team
   
-      respond_to do |format|
         if @team.save
           # Process user_ids and board_ids correctly
           user_ids = process_ids(team_params[:user_ids])
@@ -28,11 +27,11 @@ module Api
           @team.users = User.where(id: user_ids)
           @team.boards = Board.where(id: board_ids)
   
-          render json: { message: "Team created successfully", team: team }, status: :created
+          render json: { message: "Team created successfully", team: @team }, status: :created
         else
-          render json: { errors: team.errors.full_messages }, status: :unprocessable_entity
+          render json: { errors: @team.errors.full_messages }, status: :unprocessable_entity
         end
-      end
+      
     end
   
     def edit
