@@ -10,15 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_26_053211) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_01_131039) do
   create_table "boards", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "team_id"
+    t.bigint "team_id"
     t.string "description"
-    t.index ["name"], name: "index_boards_on_name", unique: true
-    t.index ["team_id"], name: "index_boards_on_team_id"
+    t.index [ "name" ], name: "index_boards_on_name", unique: true
+    t.index [ "team_id" ], name: "index_boards_on_team_id"
   end
 
   create_table "jwt_blacklists", force: :cascade do |t|
@@ -26,7 +26,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_26_053211) do
     t.datetime "exp", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["jti"], name: "index_jwt_blacklists_on_jti"
+    t.index [ "jti" ], name: "index_jwt_blacklists_on_jti"
   end
 
   create_table "notifications", force: :cascade do |t|
@@ -35,7 +35,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_26_053211) do
     t.boolean "read", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_notifications_on_user_id"
+    t.index [ "user_id" ], name: "index_notifications_on_user_id"
   end
 
   create_table "tasks", force: :cascade do |t|
@@ -48,7 +48,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_26_053211) do
     t.integer "user_id"
     t.integer "status", default: 0
     t.integer "priority", default: 1
-    t.index ["user_id"], name: "index_tasks_on_user_id"
+    t.index [ "user_id" ], name: "index_tasks_on_user_id"
   end
 
   create_table "teams", force: :cascade do |t|
@@ -56,14 +56,14 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_26_053211) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "description"
-    t.index ["name"], name: "index_teams_on_name", unique: true
+    t.index [ "name" ], name: "index_teams_on_name", unique: true
   end
 
   create_table "teams_users", id: false, force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "team_id", null: false
-    t.index ["team_id"], name: "index_teams_users_on_team_id"
-    t.index ["user_id"], name: "index_teams_users_on_user_id"
+    t.index [ "team_id" ], name: "index_teams_users_on_team_id"
+    t.index [ "user_id" ], name: "index_teams_users_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -78,9 +78,9 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_26_053211) do
     t.integer "team_id"
     t.string "first_name"
     t.string "last_name"
-    t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-    t.index ["team_id"], name: "index_users_on_team_id"
+    t.index [ "email" ], name: "index_users_on_email", unique: true
+    t.index [ "reset_password_token" ], name: "index_users_on_reset_password_token", unique: true
+    t.index [ "team_id" ], name: "index_users_on_team_id"
   end
 
   add_foreign_key "boards", "teams", on_delete: :nullify
