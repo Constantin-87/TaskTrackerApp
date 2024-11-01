@@ -2,7 +2,6 @@ class Board < ApplicationRecord
   belongs_to :team, optional: true
   has_many :tasks, dependent: :destroy
 
-  # Custom validation methods
   validate :name_presence_and_length
   validate :description_presence_and_length
   validate :team_presence

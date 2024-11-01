@@ -13,9 +13,7 @@ class Notification < ApplicationRecord
   private
 
   def broadcast_notification
-    Rails.logger.info "Notification Model: Broadcasting notification to user #{user.id} with message: #{message}"
-
-    # Access any open WebSocket connections managed within your NotificationsController
+    # Access any open WebSocket connections managed within NotificationsController
     connection = Api::NotificationsController.connections[user.id]
 
     if connection
