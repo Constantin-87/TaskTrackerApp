@@ -1,4 +1,4 @@
-name: Deploy to Test Environment
+name: Deploy to EC2 instance
 
 on:
   workflow_dispatch:
@@ -9,7 +9,7 @@ on:
         default: "test"
 
 jobs:
-  deploy-test:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,12 +27,12 @@ jobs:
           gem install bundler
           bundle install
 
-      - name: Deploy to Test EC2
+      - name: Deploy to EC2
         env:
-          EC2_HOST: ${{ vars.TEST_EC2_HOST }}
+          EC2_HOST: ${{ vars.EC2_HOST }}
           EC2_USER: ${{ vars.EC2_USER }}
           EC2_PATH_BACKEND: ${{ vars.EC2_PATH_BACKEND }}
-          DB_HOST: ${{ vars.TEST_DB_HOST }}
+          DB_HOST: ${{ vars.DB_HOST }}
           DB_USER: ${{ vars.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_NAME: tasktracker-test
@@ -53,7 +53,7 @@ jobs:
             bundle config set clean true
             bundle config set deployment true
             bundle install
-            RAILS_ENV=test bundle exec rails db:migrate || (RAILS_ENV=test bundle exec rails db:create db:migrate)
+            RAILS_ENV=production bundle exec rails db:migrate
             sudo systemctl restart nginx
           EOF
         shell: bash

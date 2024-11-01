@@ -116,6 +116,6 @@ jobs:
             github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              workflow_id: "deploy_test.yml",
+              workflow_id: "deploy.yml",
               ref: "main"
             })

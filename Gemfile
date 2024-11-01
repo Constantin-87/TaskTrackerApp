@@ -24,6 +24,8 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+  
+  gem 'sqlite3', '~> 1.3', '>= 1.3.11'
 end
 
 group :development do
@@ -44,4 +46,8 @@ gem "pundit", "~> 2.4"
 gem "rack-cors", require: "rack/cors"
 gem "devise-jwt"
 gem "faye-websocket"
-gem "mysql2", "~> 0.5.2"
+gem 'fiddle'
+
+group :production do
+  gem 'mysql2', '~> 0.5.2'
+end
