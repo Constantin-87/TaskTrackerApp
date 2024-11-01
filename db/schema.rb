@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_01_132531) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_01_133325) do
   create_table "boards", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -75,7 +75,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_01_132531) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "role", default: 0
-    t.integer "team_id"
+    t.bigint "team_id"
     t.string "first_name"
     t.string "last_name"
     t.index ["email"], name: "index_users_on_email", unique: true
@@ -86,5 +86,5 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_01_132531) do
   add_foreign_key "boards", "teams", on_delete: :nullify
   add_foreign_key "notifications", "users"
   add_foreign_key "tasks", "users"
-  add_foreign_key "users", "teams", on_delete: :nullify
+  add_foreign_key "users", "teams"
 end
