@@ -1,9 +1,16 @@
 name: Deploy to Test Environment
 
 on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Deployment Environment"
+        required: true
+        default: "test"
+
   push:
     branches-ignore:
-      - main # Prevents this workflow from running on main branch
+      - main
 
 jobs:
   deploy-test:

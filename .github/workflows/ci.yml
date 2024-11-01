@@ -1,4 +1,4 @@
-name: CI and Deploy to AWS
+name: CI Tests
 
 on:
   pull_request:
@@ -71,7 +71,10 @@ jobs:
       - name: Run tests
         env:
           RAILS_ENV: test
-        run: bin/rails db:test:prepare test test:system
+        run: |
+          bin/rails db:test:prepare
+          bin/rails test
+          bin/rails test:system
 
       - name: Keep screenshots from failed system tests
         uses: actions/upload-artifact@v4
@@ -81,33 +84,19 @@ jobs:
           path: ${{ github.workspace }}/tmp/screenshots
           if-no-files-found: ignore
 
-  deploy:
+  # Trigger deployment to test environment only if tests pass
+  deployment_trigger:
     runs-on: ubuntu-latest
-    needs: test # Ensures deploy runs only after tests pass
-    if: github.ref == 'refs/heads/main'
-
+    needs: [scan_ruby, scan_js, lint, test]
+    if: success()
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up AWS CLI
-        uses: aws-actions/configure-aws-credentials@v2
+      - name: Trigger Deploy to Test Environment
+        uses: actions/github-script@v6
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Deploy to Elastic Beanstalk
-        env:
-          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
-        run: |
-          zip -r deploy.zip .  # Archive the app's source code and dependencies
-          aws elasticbeanstalk create-application-version --application-name "YourAppName" --version-label "v${{ github.run_number }}" --source-bundle S3Bucket="YourBucketName",S3Key="deploy.zip"
-          aws elasticbeanstalk update-environment --environment-name "YourEnvironmentName" --version-label "v${{ github.run_number }}"
-
-      # Alternative step for ECS deployment (if using ECS)
-      - name: Deploy to ECS
-        env:
-          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
-        run: |
-          aws ecs update-service --cluster YourClusterName --service YourServiceName --force-new-deployment
+          script: |
+            github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: "deploy_test.yml",
+              ref: "main"
+            })
