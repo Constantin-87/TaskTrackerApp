@@ -45,10 +45,24 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    steps:
-      - name: Install packages
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y google-chrome-stable curl libjemalloc2 libvips sqlite3
 
+    services:
+      mysql:
+        image: mysql:8
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: test_db
+          MYSQL_USER: test_user
+          MYSQL_PASSWORD: test_password
+
+    steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -58,28 +72,36 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Make Rails executable
-        run: chmod +x bin/rails
+      - name: Setup DB Config
+        run: |
+          echo "test:
+            adapter: mysql2
+            encoding: utf8mb4
+            pool: 5
+            username: test_user
+            password: test_password
+            host: 127.0.0.1
+            database: test_db" > config/database.yml
 
-      - name: Run tests
+      - name: Wait for MySQL
+        run: |
+          while ! mysqladmin ping -h127.0.0.1 --silent; do
+            echo "Waiting for MySQL to be ready..."
+            sleep 1
+          done
+
+      - name: Prepare Database
         env:
           RAILS_ENV: test
-          DB_HOST: ${{ vars.TEST_DB_HOST }}
-          DB_USER: ${{ vars.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_NAME: tasktracker-test
         run: |
-          bundle exec rails db:test:prepare
+          bundle exec rails db:create db:schema:load
+
+      - name: Run Tests
+        env:
+          RAILS_ENV: test
+        run: |
           bundle exec rails test
           bundle exec rails test:system
-
-      - name: Keep screenshots from failed system tests
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: screenshots
-          path: ${{ github.workspace }}/tmp/screenshots
-          if-no-files-found: ignore
 
   # Trigger deployment to test environment only if tests pass
   deployment_trigger:
