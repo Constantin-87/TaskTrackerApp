@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_01_132030) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_01_132531) do
   create_table "boards", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -45,7 +45,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_01_132030) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "board_id"
-    t.integer "user_id"
+    t.bigint "user_id"
     t.integer "status", default: 0
     t.integer "priority", default: 1
     t.index ["user_id"], name: "index_tasks_on_user_id"
