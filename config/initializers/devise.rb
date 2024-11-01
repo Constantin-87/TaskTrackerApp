@@ -6,36 +6,35 @@ Devise.setup do |config|
   # config.secret_key = 'your-unique-secret-key'
 
   # Mailer sender address for sending Devise emails.
-  config.mailer_sender = 'please-change-me-at-config-initializers-devise@example.com'
+  config.mailer_sender = "please-change-me-at-config-initializers-devise@example.com"
 
   # Load and configure the ORM. Supports :active_record (default).
-  require 'devise/orm/active_record'
+  require "devise/orm/active_record"
 
   # Configure case-insensitive and whitespace stripping for email addresses.
-  config.case_insensitive_keys = [:email]
-  config.strip_whitespace_keys = [:email]
+  config.case_insensitive_keys = [ :email ]
+  config.strip_whitespace_keys = [ :email ]
 
   # API-related adjustments:
   # Skip session storage for http-authentication since it’s API-only.
-  config.skip_session_storage = [:http_auth]
+  config.skip_session_storage = [ :http_auth ]
 
   # Set http_authenticatable to true to support HTTP authentication (token-based or otherwise).
   config.http_authenticatable = true
 
    # Set the Devise navigational formats to only JSON (remove HTML responses)
-   config.navigational_formats = [:json]
+   config.navigational_formats = [ :json ]
 
   # If you plan to use JWT tokens for Devise authentication, you can configure this here.
   config.jwt do |jwt|
     jwt.secret = Rails.application.secret_key_base
     jwt.dispatch_requests = [
-      ['POST', %r{^/users/sign_in$}]
+      [ "POST", %r{^/users/sign_in$} ]
     ]
     jwt.revocation_requests = [
-      ['DELETE', %r{^/users/sign_out$}]
+      [ "DELETE", %r{^/users/sign_out$} ]
     ]
     jwt.expiration_time = 30.minutes.to_i
-
   end
 
 

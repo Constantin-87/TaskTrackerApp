@@ -36,5 +36,5 @@ class NotificationTest < ActiveSupport::TestCase
     unread_notifications = Notification.unread
     assert_includes unread_notifications, unread_notification
     assert_not_includes unread_notifications, read_notification
-  end  
+  end
 end

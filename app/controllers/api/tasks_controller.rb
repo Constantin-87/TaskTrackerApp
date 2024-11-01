@@ -3,18 +3,18 @@ module Api
     before_action :authenticate_user!
 
     def index
-      # Use board_id from params to filter tasks for a specific board if provided
+    # Use board_id from params to filter tasks for a specific board if provided
     if params[:board_id].present?
       board_id = params[:board_id]
       tasks = Task.where(board_id: board_id).includes(:board)
     else
       tasks = current_user.tasks.includes(:board)
     end
-    
+
       # Use the human-readable statuses
       status_options = Task.status_human_readable
-      priority_options = Task.priorities.keys.map { |priority| [priority, priority.capitalize] }.to_h
-      
+      priority_options = Task.priorities.keys.map { |priority| [ priority, priority.capitalize ] }.to_h
+
       render json: {
         tasks: tasks.as_json(include: :board).map do |task|
            Rails.logger.info "Task data with human labels: #{task}"
@@ -28,16 +28,15 @@ module Api
       }
     end
 
-     # Show action to retrieve a specific task by ID for editing
+    # Show action to retrieve a specific task by ID for editing
     def show
-
       status_options = Task.status_human_readable
-      priority_options = Task.priorities.keys.map { |priority| [priority, priority.capitalize] }.to_h
+      priority_options = Task.priorities.keys.map { |priority| [ priority, priority.capitalize ] }.to_h
 
-      if params[:id] == "-1"        
+      if params[:id] == "-1"
         render json: { status_options: status_options, priority_options: priority_options }
       else
-        begin          
+        begin
           task = Task.find(params[:id])
           render json: {
             task: task.as_json(include: :board).merge("human_status" => task.human_status),
@@ -48,25 +47,25 @@ module Api
           render json: { error: "Task not found" }, status: :not_found
         end
       end
-    end    
+    end
 
     def create
       authorize Task
       # Ensure board_id is provided in the params
       unless params[:task][:board_id].present?
-        render json: { errors: ["Board must be selected"] }, status: :unprocessable_entity and return
+        render json: { errors: [ "Board must be selected" ] }, status: :unprocessable_entity and return
       end
 
       board = Board.find_by(id: params[:task][:board_id])
       if board.nil?
-        render json: { errors: ["Board not found"] }, status: :not_found and return
+        render json: { errors: [ "Board not found" ] }, status: :not_found and return
       end
 
       task = board.tasks.build(task_params)
       task.current_user = current_user
 
       # Add an observer if user is present
-      task.add_observer(NotificationObserver.instance) if task.user.present? 
+      task.add_observer(NotificationObserver.instance) if task.user.present?
 
       if task.save
         NotificationObserver.instance.update("Task created", task)
@@ -85,7 +84,7 @@ module Api
       task = Task.find(params[:id])
       authorize task
       task.current_user = current_user
-    
+
       if task.update(task_params)
         NotificationObserver.instance.update("Task updated", task)
         render json: { task: task }, status: :ok
@@ -93,7 +92,7 @@ module Api
         Rails.logger.error "Task update failed with errors: #{task.errors.full_messages}"
         render json: { errors: task.errors.full_messages }, status: :unprocessable_entity
       end
-    end 
+    end
 
     def destroy
       task = Task.find(params[:id])

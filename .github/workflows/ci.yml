@@ -23,26 +23,7 @@ jobs:
         run: gem install brakeman
 
       - name: Scan for common Rails security vulnerabilities using static analysis
-        run: brakeman --no-pager # Removed `bin/` prefix as it's unnecessary
-
-  scan_js:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: .ruby-version
-          bundler-cache: true
-
-      - name: Install importmap gem
-        run: gem install importmap-rails
-
-      - name: Scan for security vulnerabilities in JavaScript dependencies
-        run: bundle exec importmap audit # Use `bundle exec` to ensure gems are run correctly
+        run: brakeman --no-pager
 
   lint:
     runs-on: ubuntu-latest
@@ -60,7 +41,7 @@ jobs:
         run: gem install rubocop
 
       - name: Lint code for consistent style
-        run: rubocop -f github # Removed `bin/` prefix to match global installation
+        run: rubocop -f github
 
   test:
     runs-on: ubuntu-latest
@@ -83,6 +64,10 @@ jobs:
       - name: Run tests
         env:
           RAILS_ENV: test
+          DB_HOST: ${{ vars.TEST_DB_HOST }}
+          DB_USER: ${{ vars.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: tasktracker-test
         run: |
           bundle exec rails db:test:prepare
           bundle exec rails test
@@ -99,7 +84,7 @@ jobs:
   # Trigger deployment to test environment only if tests pass
   deployment_trigger:
     runs-on: ubuntu-latest
-    needs: [scan_ruby, scan_js, lint, test]
+    needs: [scan_ruby, lint, test]
     if: success()
     steps:
       - name: Trigger Deploy to Test Environment

@@ -1,21 +1,5 @@
 source "https://rubygems.org"
 
-
-
-# # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
-# gem "turbo-rails"
-# # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
-# gem "sprockets-rails"
-# # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
-# gem "importmap-rails"
-# # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
-# gem "stimulus-rails"
-# gem "jquery-rails", "~> 4.6"
-
-
-
-
-
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.2.2"
 
@@ -57,7 +41,7 @@ end
 gem "devise", "~> 4.9"
 gem "observer"
 gem "pundit", "~> 2.4"
-gem 'rack-cors', require: 'rack/cors'
-gem 'devise-jwt'
-gem 'faye-websocket'
-gem 'mysql2', '~> 0.5.2'
+gem "rack-cors", require: "rack/cors"
+gem "devise-jwt"
+gem "faye-websocket"
+gem "mysql2", "~> 0.5.2"

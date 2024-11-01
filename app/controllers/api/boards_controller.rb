@@ -19,7 +19,7 @@ module Api
         priority_options = Task.priorities.keys # Assuming priority is an enum
         render json: { board: @board, tasks: @tasks, users: @users, status_options: status_options, priority_options: priority_options }
       end
-      
+
 
       def new
         @board = Board.new
@@ -62,6 +62,5 @@ module Api
       def user_not_authorized
         render json: { error: "You are not authorized to perform this action." }, status: :forbidden
       end
-  end
+    end
 end
-

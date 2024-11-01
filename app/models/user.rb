@@ -4,14 +4,14 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable,
          :jwt_authenticatable, jwt_revocation_strategy: JwtBlacklist
 
-  # Enum for user roles      
+  # Enum for user roles
   enum :role, { agent: 0, manager: 1, admin: 2 }
 
   # Associations
   has_and_belongs_to_many :teams, optional: true
   has_many :tasks
   has_many :notifications, dependent: :destroy
- 
+
   # Validations
   validates :email, presence: true, uniqueness: true
   validates :first_name, presence: true, length: { minimum: 2 }
@@ -25,8 +25,8 @@ class User < ApplicationRecord
   # Method to add custom claims to the JWT payload
   def jwt_payload
     payload = {
-      'sub' => id,                          # Subject: unique user ID
-      'role' => role                        # Custom role claim
+      "sub" => id,                          # Subject: unique user ID
+      "role" => role                        # Custom role claim
     }
     Rails.logger.info "JWT payload generated for user #{email}: #{payload}"  # Log payload generation
     payload
@@ -36,5 +36,4 @@ class User < ApplicationRecord
   def password_required?
     new_record? || password.present?
   end
-  
 end

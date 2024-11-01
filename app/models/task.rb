@@ -18,7 +18,7 @@ class Task < ApplicationRecord
 
   validates :title, presence: true
   validates :description, presence: true
-  
+
   # Human-readable labels
   def self.status_human_readable
     {
@@ -68,6 +68,4 @@ class Task < ApplicationRecord
   def self_update?
     current_user == user
   end
-
-  
 end

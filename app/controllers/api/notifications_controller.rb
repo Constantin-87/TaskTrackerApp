@@ -21,7 +21,7 @@ module Api
 
     def update
       notification = current_user.notifications.find(params[:id])
-  
+
       if notification.update(read: true)
         render json: { message: "Notification marked as read." }, status: :ok
       else

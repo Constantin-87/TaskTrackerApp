@@ -34,8 +34,8 @@ class Api::TeamsControllerTest < ActionDispatch::IntegrationTest
         team: {
           name: "New Team",
           description: "A valid team description",
-          user_ids: [users(:agent_user).id],
-          board_ids: [boards(:adminBoard).id]
+          user_ids: [ users(:agent_user).id ],
+          board_ids: [ boards(:adminBoard).id ]
         }
       }.to_json, headers: { "Content-Type": "application/json" }
     end

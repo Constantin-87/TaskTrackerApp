@@ -7,12 +7,12 @@ class Users::SessionsController < Devise::SessionsController
 
   def create
     super do |resource|
-      token = request.env['warden-jwt_auth.token']
+      token = request.env["warden-jwt_auth.token"]
       Rails.logger.info "JWT Token issued for user #{resource.email}: #{token}"  # Log token creation
-      response.set_header('Authorization', "Bearer #{token}")
+      response.set_header("Authorization", "Bearer #{token}")
       render json: {
         success: true,
-        message: 'Logged in successfully.',
+        message: "Logged in successfully.",
         user: {
           id: resource.id,
           email: resource.email,
@@ -29,14 +29,14 @@ class Users::SessionsController < Devise::SessionsController
       begin
         sign_out(current_user)
         Rails.logger.info "User logged out successfully. Revoking JWT token."
-        render json: { success: true, message: 'Logged out successfully.' }, status: :ok
+        render json: { success: true, message: "Logged out successfully." }, status: :ok
       rescue => e
         Rails.logger.error "Error during logout: #{e.message}"
-        render json: { error: 'Logout failed due to an internal error.' }, status: :internal_server_error
+        render json: { error: "Logout failed due to an internal error." }, status: :internal_server_error
       end
     else
       Rails.logger.warn "Logout attempt without an active session"
-      render json: { success: false, message: 'No user logged in.' }, status: :unauthorized
+      render json: { success: false, message: "No user logged in." }, status: :unauthorized
     end
   end
 
@@ -94,6 +94,4 @@ class Users::SessionsController < Devise::SessionsController
 
   # # Disable CSRF tokens for JSON requests (optional for API-only mode)
   # def verify_signed_out_user; end
-
-
 end

@@ -75,7 +75,7 @@ class TaskTest < ActiveSupport::TestCase
     # Add observer and save the task with an updated title
     task.add_observer(NotificationObserver.instance)
     task.title = "Updated Title"
-    
+
     assert_difference "Notification.count", 1 do
       task.save
     end
@@ -87,7 +87,7 @@ class TaskTest < ActiveSupport::TestCase
 
     task.add_observer(NotificationObserver.instance)
     task.title = "Updated Title"
-    
+
     assert_no_difference "Notification.count" do
       task.save
     end
@@ -98,7 +98,7 @@ class TaskTest < ActiveSupport::TestCase
     task.current_user = users(:manager_user)
 
     task.add_observer(NotificationObserver.instance)
-    
+
     assert_difference "Notification.count", 1 do
       task.destroy
     end
@@ -109,7 +109,7 @@ class TaskTest < ActiveSupport::TestCase
     task.current_user = @user # Same user, should prevent notification
 
     task.add_observer(NotificationObserver.instance)
-    
+
     assert_no_difference "Notification.count" do
       task.destroy
     end

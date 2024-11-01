@@ -1,8 +1,8 @@
-require 'faye/websocket'
+require "faye/websocket"
 class Notification < ApplicationRecord
   belongs_to :user
 
-  validates :message, presence: true 
+  validates :message, presence: true
 
   # Scope to get unread notifications
   scope :unread, -> { where(read: false) }
