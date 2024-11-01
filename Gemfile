@@ -26,6 +26,8 @@ group :development, :test do
   gem "rubocop-rails-omakase", require: false
 
   gem "sqlite3", "~> 1.3", ">= 1.3.11"
+  
+  gem "fiddle"
 end
 
 group :development do
@@ -46,7 +48,6 @@ gem "pundit", "~> 2.4"
 gem "rack-cors", require: "rack/cors"
 gem "devise-jwt"
 gem "faye-websocket"
-gem "fiddle"
 
 group :production do
   gem "mysql2", "~> 0.5.2"
