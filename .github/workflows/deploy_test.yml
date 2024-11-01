@@ -8,10 +8,6 @@ on:
         required: true
         default: "test"
 
-  push:
-    branches-ignore:
-      - main
-
 jobs:
   deploy-test:
     runs-on: ubuntu-latest
