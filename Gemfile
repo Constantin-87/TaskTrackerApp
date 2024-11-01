@@ -26,7 +26,7 @@ group :development, :test do
   gem "rubocop-rails-omakase", require: false
 
   gem "sqlite3", "~> 1.3", ">= 1.3.11"
-  
+
   gem "fiddle"
 end
 
