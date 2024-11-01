@@ -23,7 +23,7 @@ jobs:
         run: gem install brakeman
 
       - name: Scan for common Rails security vulnerabilities using static analysis
-        run: brakeman --no-pager
+        run: brakeman --no-pager # Removed `bin/` prefix as it's unnecessary
 
   scan_js:
     runs-on: ubuntu-latest
@@ -42,7 +42,7 @@ jobs:
         run: gem install importmap-rails
 
       - name: Scan for security vulnerabilities in JavaScript dependencies
-        run: bin/importmap audit
+        run: bundle exec importmap audit # Use `bundle exec` to ensure gems are run correctly
 
   lint:
     runs-on: ubuntu-latest
@@ -60,7 +60,7 @@ jobs:
         run: gem install rubocop
 
       - name: Lint code for consistent style
-        run: rubocop -f github
+        run: rubocop -f github # Removed `bin/` prefix to match global installation
 
   test:
     runs-on: ubuntu-latest
@@ -84,9 +84,9 @@ jobs:
         env:
           RAILS_ENV: test
         run: |
-          bin/rails db:test:prepare
-          bin/rails test
-          bin/rails test:system
+          bundle exec rails db:test:prepare
+          bundle exec rails test
+          bundle exec rails test:system
 
       - name: Keep screenshots from failed system tests
         uses: actions/upload-artifact@v4
