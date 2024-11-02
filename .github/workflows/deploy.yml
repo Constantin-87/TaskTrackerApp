@@ -59,6 +59,13 @@ jobs:
             bundle config set clean true
             bundle config set deployment true
             bundle install
+
+            echo "DB_HOST is $DB_HOST"
+            echo "DB_USER is $DB_USER"
+            echo "DB_PASSWORD is $DB_PASSWORD"
+            echo "DB_NAME is $DB_NAME"
+            echo "SECRET_KEY_BASE is $SECRET_KEY_BASE"
+
             RAILS_ENV=production SECRET_KEY_BASE=${SECRET_KEY_BASE} bundle exec rails db:migrate
             sudo systemctl restart nginx
           EOF
