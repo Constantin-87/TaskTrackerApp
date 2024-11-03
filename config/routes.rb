@@ -6,7 +6,8 @@ Rails.application.routes.draw do
 
     # Define routes for the API
     devise_for :users, controllers: {
-      sessions: "users/sessions"
+      sessions: "users/sessions",
+      registrations: "users/registrations"
     }
 
     resources :teams, only: [ :index, :show, :create, :update, :destroy ]
