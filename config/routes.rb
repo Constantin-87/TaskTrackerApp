@@ -1,15 +1,14 @@
 # config/routes.rb
-Rails.application.routes.draw do
-  # Define routes for the API
-  devise_for :users, controllers: {
-    sessions: "users/sessions"
-  }
-
-  # Set the root path to a generic API response if needed
-  root to: proc { [ 200, {}, [ "API is live" ] ] }
+Rails.application.routes.draw do  
 
   # API routes for boards (under namespace :api)
   namespace :api do
+
+    # Define routes for the API
+    devise_for :users, controllers: {
+      sessions: "users/sessions"
+    }
+
     resources :teams, only: [ :index, :show, :create, :update, :destroy ]
     resources :boards, only: [ :index, :show, :create, :destroy ]
     resources :tasks, only: [ :index, :show, :create, :update, :destroy ]  # Add :index here
@@ -18,6 +17,9 @@ Rails.application.routes.draw do
     get "roles", to: "users#roles"
     get "home_page", to: "home_page#index" # Endpoint for fetching the homepage tasks
   end
+
+  # Set the root path to a generic API response
+  root to: proc { [ 200, {}, [ "API is live" ] ] }
 
    # Catch-all route for non-API routes (this will serve the React app)
    get "*path", to: "application#frontend_index", constraints: ->(req) { req.format.html? }
