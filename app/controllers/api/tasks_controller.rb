@@ -8,7 +8,7 @@ module Api
       board_id = params[:board_id]
       tasks = Task.where(board_id: board_id).includes(:board)
     else
-      tasks = current_user.tasks.includes(:board)
+      tasks = current_devise_api_token.resource_owner.tasks.includes(:board)
     end
 
       # Use the human-readable statuses
@@ -62,7 +62,7 @@ module Api
       end
 
       task = board.tasks.build(task_params)
-      task.current_user = current_user
+      task.current_user = current_devise_api_token.resource_owner
 
       # Add an observer if user is present
       task.add_observer(NotificationObserver.instance) if task.user.present?
@@ -83,7 +83,7 @@ module Api
     def update
       task = Task.find(params[:id])
       authorize task
-      task.current_user = current_user
+      task.current_user = current_devise_api_token.resource_owner
 
       if task.update(task_params)
         NotificationObserver.instance.update("Task updated", task)

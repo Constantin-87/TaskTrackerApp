@@ -24,7 +24,7 @@ module Api
       def new
         @board = Board.new
         # Show teams based on user role
-        @teams = current_user.admin? ? Team.all : Team.where(id: current_user.team_id)
+        @teams = current_devise_api_token.resource_owner.admin? ? Team.all : Team.where(id: current_devise_api_token.resource_owner.team_id)
         authorize @board
       end
 
@@ -35,7 +35,7 @@ module Api
           render json: { board: @board }, status: :created # Return created board as JSON
         else
           # Repopulate @teams if creation fails
-          @teams = current_user.admin? ? Team.all : Team.where(id: current_user.team_id)
+          @teams = current_devise_api_token.resource_owner.admin? ? Team.all : Team.where(id: current_devise_api_token.resource_owner.team_id)
 
           render json: { errors: @board.errors.full_messages }, status: :unprocessable_entity
         end
@@ -43,7 +43,7 @@ module Api
 
 
       def destroy
-        Rails.logger.info("Current user: #{current_user.inspect}")
+        Rails.logger.info("Current user: #{current_devise_api_token.resource_owner.inspect}")
         @board = Board.find(params[:id])
         authorize @board
         @board.destroy

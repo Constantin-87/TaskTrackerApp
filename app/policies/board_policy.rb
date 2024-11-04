@@ -1,6 +1,6 @@
 class BoardPolicy < ApplicationPolicy
   def index?
-    user.admin? || user.manager? || user.agent?
+    true
   end
 
   def show?

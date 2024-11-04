@@ -29,4 +29,8 @@ class ApplicationController < ActionController::API
     Rails.logger.warn "Unauthorized access attempt detected"
     render json: { error: "You are not authorized to perform this action." }, status: :forbidden
   end
+
+  def pundit_user
+    current_devise_api_token&.resource_owner
+  end
 end
