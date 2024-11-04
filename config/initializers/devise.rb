@@ -16,19 +16,16 @@ Devise.setup do |config|
   config.password_length = 6..128
 
   config.api.configure do |api|
-
     # Authorization
-    api.authorization.key = 'Authorization'
-    api.authorization.scheme = 'Bearer'
+    api.authorization.key = "Authorization"
+    api.authorization.scheme = "Bearer"
     api.authorization.location = :both # :header or :params or :both
-    api.authorization.params_key = 'access_token'
+    api.authorization.params_key = "access_token"
 
 
     # Base classes
-    api.base_token_model = 'Devise::Api::Token'
-
+    api.base_token_model = "Devise::Api::Token"
   end
-
 end
 
 Devise::Api::Responses::TokenResponse.prepend Devise::Api::Responses::TokenResponseDecorator
