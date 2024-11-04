@@ -19,7 +19,7 @@ class Api::BoardsControllerTest < ActionDispatch::IntegrationTest
       refresh_token: SecureRandom.hex(20),
       expires_in: 3600
     )
-  
+
     Api::BoardsController.any_instance.stubs(:authenticate_devise_api_token!).returns(true)
     Api::BoardsController.any_instance.stubs(:current_devise_api_token).returns(token)
     yield

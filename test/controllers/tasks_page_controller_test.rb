@@ -18,12 +18,12 @@ class Api::TasksControllerTest < ActionDispatch::IntegrationTest
       refresh_token: SecureRandom.hex(20),
       expires_in: 3600
     )
-  
+
     Api::TasksController.any_instance.stubs(:authenticate_devise_api_token!).returns(true)
     Api::TasksController.any_instance.stubs(:current_devise_api_token).returns(token)
     yield
   end
-  
+
 
   # Test for creating a task as admin
   test "should create task as admin" do

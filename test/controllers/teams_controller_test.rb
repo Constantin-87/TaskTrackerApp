@@ -15,12 +15,12 @@ class Api::TeamsControllerTest < ActionDispatch::IntegrationTest
       refresh_token: SecureRandom.hex(20),
       expires_in: 3600
     )
-  
+
     Api::TeamsController.any_instance.stubs(:authenticate_devise_api_token!).returns(true)
     Api::TeamsController.any_instance.stubs(:current_devise_api_token).returns(token)
     yield
   end
-  
+
 
   # Test index action for an admin user
   test "should get index as admin" do
