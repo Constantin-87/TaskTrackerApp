@@ -1,7 +1,7 @@
 # app/controllers/api/notifications_controller.rb
 module Api
   class NotificationsController < ApplicationController
-    before_action :authenticate_user!
+    before_action :authenticate_devise_api_token!
 
     # Store active WebSocket connections
     @@connections ||= {}

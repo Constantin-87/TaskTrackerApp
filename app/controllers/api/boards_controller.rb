@@ -1,6 +1,6 @@
 module Api
     class BoardsController < ApplicationController
-      before_action :authenticate_user!
+      before_action :authenticate_devise_api_token!
       after_action :verify_authorized
       rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 

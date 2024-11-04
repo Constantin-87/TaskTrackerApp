@@ -38,15 +38,17 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
   gem "rails-controller-testing"
+  gem "mocha", require: false
 end
 
 gem "devise", "~> 4.9"
 gem "observer"
 gem "pundit", "~> 2.4"
 gem "rack-cors", require: "rack/cors"
-gem "devise-jwt"
 gem "faye-websocket"
 
 group :production do
   gem "mysql2", "~> 0.5.2"
 end
+
+gem "devise-api", "~> 0.2.0"

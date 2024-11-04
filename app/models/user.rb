@@ -1,8 +1,7 @@
 class User < ApplicationRecord
   # Include default devise modules.
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable,
-         :jwt_authenticatable, jwt_revocation_strategy: JwtBlacklist
+         :recoverable, :rememberable, :validatable, :api
 
   # Enum for user roles
   enum :role, { agent: 0, manager: 1, admin: 2 }
@@ -21,16 +20,6 @@ class User < ApplicationRecord
 
 
   private
-
-  # Method to add custom claims to the JWT payload
-  def jwt_payload
-    payload = {
-      "sub" => id,                          # Subject: unique user ID
-      "role" => role                        # Custom role claim
-    }
-    Rails.logger.info "JWT payload generated for user #{email}: #{payload}"  # Log payload generation
-    payload
-  end
 
   # Only require password if creating a new user or changing the password
   def password_required?

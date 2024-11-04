@@ -1,6 +1,6 @@
 module Api
   class TasksController < ApplicationController
-    before_action :authenticate_user!
+    before_action :authenticate_devise_api_token!
 
     def index
     # Use board_id from params to filter tasks for a specific board if provided

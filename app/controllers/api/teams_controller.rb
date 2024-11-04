@@ -1,6 +1,6 @@
 module Api
   class TeamsController < ApplicationController
-    before_action :authenticate_user!
+    before_action :authenticate_devise_api_token!
     before_action :authorize_admin # Ensures only admins can access
 
     def index

@@ -1,15 +1,14 @@
 # config/routes.rb
 Rails.application.routes.draw do
-  # Define routes for the API
-  devise_for :users, controllers: {
-    sessions: "users/sessions"
-  }
+  # # Define routes
+  # devise_for :users, controllers: { tokens: "devise/api/tokens" }
 
   # Set the root path to a generic API response if needed
   root to: proc { [ 200, {}, [ "API is live" ] ] }
 
-  # API routes for boards (under namespace :api)
+  # API routes
   namespace :api do
+    devise_for :users, controllers: { tokens: "devise/api/tokens" }
     resources :teams, only: [ :index, :show, :create, :update, :destroy ]
     resources :boards, only: [ :index, :show, :create, :destroy ]
     resources :tasks, only: [ :index, :show, :create, :update, :destroy ]  # Add :index here
