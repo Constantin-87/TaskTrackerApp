@@ -23,7 +23,7 @@ module Api
     # POST /api/users
     def create
       # Determine the role to assign
-      role = current_user&.admin? ? user_params[:role] : "agent"
+      role = current_devise_api_token&.resource_owner&.admin? ? user_params[:role] : "agent"
 
       @user = User.new(user_params.except(:role).merge(role: role))
 
