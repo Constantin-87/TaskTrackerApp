@@ -1,6 +1,6 @@
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins "http://localhost:3000" # Only allow the frontend
+    origins "52.55.197.50" # Only allow the frontend
 
     resource "*",
       headers: :any,
