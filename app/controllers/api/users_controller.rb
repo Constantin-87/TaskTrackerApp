@@ -37,7 +37,7 @@ module Api
     # PUT /api/users/:id
     def update
       # Validate the current password if it's provided
-      if params[:user][:current_password].present? && !current_user.admin?
+      if params[:user][:current_password].present? && !current_devise_api_token.resource_owner.admin?
         unless @user.valid_password?(params[:user][:current_password])
           return render json: { error: "Current password is incorrect" }, status: :unprocessable_entity
         end
@@ -78,7 +78,7 @@ module Api
 
     def user_params
       permitted_params = [ :first_name, :last_name, :email, :password, :password_confirmation, :current_password ]
-      permitted_params << :role if current_user&.admin?
+      permitted_params << :role if current_devise_api_token&.resource_owner&.admin?
       params.require(:user).permit(permitted_params)
     end
   end
