@@ -1,8 +1,5 @@
 # config/routes.rb
 Rails.application.routes.draw do
-  # # Define routes
-  # devise_for :users, controllers: { tokens: "devise/api/tokens" }
-
   # Set the root path to a generic API response if needed
   root to: proc { [ 200, {}, [ "API is live" ] ] }
 
@@ -17,6 +14,9 @@ Rails.application.routes.draw do
     get "roles", to: "users#roles"
     get "home_page", to: "home_page#index" # Endpoint for fetching the homepage tasks
   end
+
+  # Set the root path to a generic API response
+  root to: proc { [ 200, {}, [ "API is live" ] ] }
 
    # Catch-all route for non-API routes (this will serve the React app)
    get "*path", to: "application#frontend_index", constraints: ->(req) { req.format.html? }
