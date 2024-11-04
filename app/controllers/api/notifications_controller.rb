@@ -1,7 +1,8 @@
 # app/controllers/api/notifications_controller.rb
 module Api
   class NotificationsController < ApplicationController
-    before_action :authenticate_devise_api_token!, only: [ :index, :update ]
+    before_action :authenticate_devise_api_token!, only: [ :index, :update ], unless: -> { Faye::WebSocket.websocket?(request.env) }
+    before_action :authenticate_via_query_token!, only: [ :index ], if: -> { Faye::WebSocket.websocket?(request.env) }
 
     # Store active WebSocket connections
     @@connections ||= {}
@@ -14,7 +15,6 @@ module Api
       Rails.logger.info("Entering NotificationsController#index")
 
       if Faye::WebSocket.websocket?(request.env)
-        authenticate_via_query_token!
         Rails.logger.info("WebSocket request detected")
         handle_websocket(request.env) if current_user
       else
