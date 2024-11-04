@@ -80,6 +80,6 @@ module Api
       permitted_params = [ :first_name, :last_name, :email, :password, :password_confirmation, :current_password ]
       permitted_params << :role if current_user&.admin?
       params.require(:user).permit(permitted_params)
-    end   
+    end
   end
 end
