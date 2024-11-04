@@ -14,8 +14,9 @@ module Api
       Rails.logger.info("Entering NotificationsController#index")
 
       if Faye::WebSocket.websocket?(request.env)
+        authenticate_via_query_token!
         Rails.logger.info("WebSocket request detected")
-        handle_websocket(request.env)
+        handle_websocket(request.env) if current_user
       else
         Rails.logger.info("Non-WebSocket request: checking notifications for #{current_devise_api_token&.resource_owner&.id || 'no user'}")
 
@@ -73,17 +74,24 @@ module Api
       ws.rack_response
     end
 
-    def authenticate_devise_api_token!
+    def authenticate_via_query_token!
       token = request.query_parameters["token"]
-      Rails.logger.info("authenticate_devise_api_token! called with token: #{token}")
+      if token.present?
+        # Check if the token is valid by querying the internal Devise API method
+        self.current_devise_api_token = Devise::Api::Token.find_by(token: token)
 
-      self.current_devise_api_token = DeviseApiToken.find_by(token: token)
-
-      if current_devise_api_token
-        Rails.logger.info("Authentication successful for user #{current_devise_api_token.resource_owner.id}")
+        # Ensure the user is set if the token is valid
+        if current_devise_api_token
+          self.current_user = current_devise_api_token.resource_owner
+          Rails.logger.info "Authenticated user #{current_user.id} via WebSocket token"
+        else
+          Rails.logger.warn "Token authentication failed. Invalid token: #{token}"
+        end
       else
-        Rails.logger.warn("Authentication failed for token: #{token}")
+        Rails.logger.warn "No token provided in WebSocket connection"
       end
+
+      head :unauthorized unless current_devise_api_token
     end
   end
 end
