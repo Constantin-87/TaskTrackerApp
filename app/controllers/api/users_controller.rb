@@ -1,7 +1,7 @@
 # app/controllers/api/users_controller.rb
 module Api
   class UsersController < ApplicationController
-    before_action :authenticate_devise_api_token!,
+    before_action :authenticate_devise_api_token!
     before_action :authorize_admin, only: [ :index, :destroy ] # Admin check except for create action
     before_action :set_user, only: [ :show, :update, :destroy ]
     before_action :authorize_profile_edit, only: [ :update ]
