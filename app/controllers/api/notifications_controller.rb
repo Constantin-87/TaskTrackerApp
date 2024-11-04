@@ -78,7 +78,7 @@ module Api
       token = request.query_parameters["token"]
       if token.present?
         # Check if the token is valid by querying the internal Devise API method
-        self.current_devise_api_token = Devise::Api::Token.find_by(token: token)
+        self.current_devise_api_token = Devise::Api::Token.find_by(access_token: token)
 
         # Ensure the user is set if the token is valid
         if current_devise_api_token
