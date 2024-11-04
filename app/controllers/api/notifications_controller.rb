@@ -1,7 +1,7 @@
 # app/controllers/api/notifications_controller.rb
 module Api
   class NotificationsController < ApplicationController
-    before_action :authenticate_devise_api_token!
+    before_action :authenticate_via_query_token!, only: [:index]
 
     # Store active WebSocket connections
     @@connections ||= {}
@@ -12,8 +12,10 @@ module Api
 
     def index
       if Faye::WebSocket.websocket?(request.env)
-        handle_websocket(request.env)
+        authenticate_via_query_token!
+        handle_websocket(request.env) if current_user
       else
+        authenticate_devise_api_token!
         notifications = current_devise_api_token.resource_owner.notifications.unread
         render json: notifications, status: :ok
       end
@@ -47,5 +49,24 @@ module Api
 
       ws.rack_response
     end
+
+    def authenticate_via_query_token!
+      if request.query_parameters["token"]
+        token = request.query_parameters["token"]
+        self.current_devise_api_token = DeviseApiToken.find_by(token: token)
+        
+        if current_devise_api_token
+          self.current_user = current_devise_api_token.resource_owner
+          Rails.logger.info "Authenticated user #{current_user.id} via WebSocket token"
+        else
+          Rails.logger.warn "Token authentication failed. Invalid token: #{token}"
+        end
+      end
+
+      head :unauthorized unless current_devise_api_token
+    end
+
+
   end
+
 end
