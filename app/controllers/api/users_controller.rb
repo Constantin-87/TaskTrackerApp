@@ -60,12 +60,12 @@ module Api
     private
 
     def authorize_admin
-      render json: { error: "Not authorized" }, status: :forbidden unless current_user.admin?
+      render json: { error: "Not authorized" }, status: :forbidden unless current_devise_api_token&.resource_owner&.admin?
     end
 
     def authorize_profile_edit
       # Allow admins to edit any profile, or allow users to edit their own profile
-      unless current_user.admin? || current_user.id == @user.id
+      unless current_devise_api_token&.resource_owner&.admin? || current_devise_api_token&.resource_owner&.id == @user.id
         render json: { error: "You are not authorized to perform this action" }, status: :forbidden
       end
     end
