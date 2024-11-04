@@ -2,7 +2,7 @@
 Rails.application.routes.draw do
   # API routes
   namespace :api do
-    devise_for :users, controllers: { tokens: "devise/api/tokens" }
+    devise_for :users, controllers: { tokens: "api/custom_tokens" }
     resources :teams, only: [ :index, :show, :create, :update, :destroy ]
     resources :boards, only: [ :index, :show, :create, :destroy ]
     resources :tasks, only: [ :index, :show, :create, :update, :destroy ]  # Add :index here

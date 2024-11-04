@@ -29,11 +29,4 @@ class ApplicationController < ActionController::API
     Rails.logger.warn "Unauthorized access attempt detected"
     render json: { error: "You are not authorized to perform this action." }, status: :forbidden
   end
-
-  protected
-
-  def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [ :first_name, :last_name, :email, :password, :password_confirmation ])
-    devise_parameter_sanitizer.permit(:account_update, keys: [ :first_name, :last_name ])
-  end
 end
