@@ -13,10 +13,22 @@ Devise.setup do |config|
   config.http_authenticatable = false
   config.navigational_formats = []  # No HTML views, only API (JSON)
 
-  # Authorization
-  api.authorization.location = :both # :header or :params or :both
-
   config.password_length = 6..128
+
+  config.api.configure do |api|
+
+    # Authorization
+    api.authorization.key = 'Authorization'
+    api.authorization.scheme = 'Bearer'
+    api.authorization.location = :both # :header or :params or :both
+    api.authorization.params_key = 'access_token'
+
+
+    # Base classes
+    api.base_token_model = 'Devise::Api::Token'
+
+  end
+
 end
 
 Devise::Api::Responses::TokenResponse.prepend Devise::Api::Responses::TokenResponseDecorator
