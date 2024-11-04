@@ -1,8 +1,5 @@
 # config/routes.rb
 Rails.application.routes.draw do
-  # Set the root path to a generic API response if needed
-  root to: proc { [ 200, {}, [ "API is live" ] ] }
-
   # API routes
   namespace :api do
     devise_for :users, controllers: { tokens: "devise/api/tokens" }

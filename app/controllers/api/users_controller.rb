@@ -28,8 +28,6 @@ module Api
       @user = User.new(user_params.except(:role).merge(role: role))
 
       if @user.save
-        # Generate a JWT token for the new user
-        token = generate_jwt_token(@user)
         render json: { message: "User created successfully", user: @user, token: token }, status: :created
       else
         render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
@@ -78,15 +76,10 @@ module Api
       render json: { error: "User not found" }, status: :not_found
     end
 
-    # Generate a JWT token for the user
-    def generate_jwt_token(user)
-     JWT.encode({ sub: user.id, exp: 24.hours.from_now.to_i }, Rails.application.secret_key_base, "HS256")
-    end
-
     def user_params
       permitted_params = [ :first_name, :last_name, :email, :password, :password_confirmation, :current_password ]
       permitted_params << :role if current_user&.admin?
       params.require(:user).permit(permitted_params)
-    end
+    end   
   end
 end
