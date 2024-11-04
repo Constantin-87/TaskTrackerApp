@@ -12,10 +12,18 @@ class Api::TasksControllerTest < ActionDispatch::IntegrationTest
 
   # Helper method to mock authentication
   def mock_authenticate_user(user)
+    token = Devise::Api::Token.new(
+      resource_owner: user,
+      access_token: SecureRandom.hex(20),
+      refresh_token: SecureRandom.hex(20),
+      expires_in: 3600
+    )
+  
     Api::TasksController.any_instance.stubs(:authenticate_devise_api_token!).returns(true)
-    Api::TasksController.any_instance.stubs(:current_user).returns(user)
+    Api::TasksController.any_instance.stubs(:current_devise_api_token).returns(token)
     yield
   end
+  
 
   # Test for creating a task as admin
   test "should create task as admin" do

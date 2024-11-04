@@ -9,10 +9,18 @@ class Api::TeamsControllerTest < ActionDispatch::IntegrationTest
 
   # Helper method to mock authentication
   def mock_authenticate_user(user)
+    token = Devise::Api::Token.new(
+      resource_owner: user,
+      access_token: SecureRandom.hex(20),
+      refresh_token: SecureRandom.hex(20),
+      expires_in: 3600
+    )
+  
     Api::TeamsController.any_instance.stubs(:authenticate_devise_api_token!).returns(true)
-    Api::TeamsController.any_instance.stubs(:current_user).returns(user)
+    Api::TeamsController.any_instance.stubs(:current_devise_api_token).returns(token)
     yield
   end
+  
 
   # Test index action for an admin user
   test "should get index as admin" do

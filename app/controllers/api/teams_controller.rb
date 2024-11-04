@@ -77,7 +77,7 @@ module Api
     end
 
     def authorize_admin
-      render json: { error: "Not authorized" }, status: :forbidden unless current_user.admin?
+      render json: { error: "Not authorized" }, status: :forbidden unless current_devise_api_token.resource_owner&.admin?
     end
 
     # Helper method to process IDs

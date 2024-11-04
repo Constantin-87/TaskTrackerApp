@@ -9,8 +9,15 @@ class Api::HomePageControllerTest < ActionDispatch::IntegrationTest
   end
 
   def mock_authenticate_user(user)
+    token = Devise::Api::Token.new(
+      resource_owner: user,
+      access_token: SecureRandom.hex(20),
+      refresh_token: SecureRandom.hex(20),
+      expires_in: 3600
+    )
+  
     Api::HomePageController.any_instance.stubs(:authenticate_devise_api_token!).returns(true)
-    Api::HomePageController.any_instance.stubs(:current_user).returns(user)
+    Api::HomePageController.any_instance.stubs(:current_devise_api_token).returns(token)
     yield
   end
 
