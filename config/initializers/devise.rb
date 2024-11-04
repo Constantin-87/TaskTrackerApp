@@ -14,9 +14,7 @@ Devise.setup do |config|
   config.navigational_formats = []  # No HTML views, only API (JSON)
 
   # Authorization
-  api.authorization.scheme = "Bearer"
   api.authorization.location = :both # :header or :params or :both
-  api.authorization.params_key = "access_token"
 
   config.password_length = 6..128
 end
