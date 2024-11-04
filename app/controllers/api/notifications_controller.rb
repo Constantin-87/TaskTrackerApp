@@ -16,12 +16,12 @@ module Api
 
       if Faye::WebSocket.websocket?(request.env)
         Rails.logger.info("WebSocket request detected")
-        handle_websocket(request.env) if current_user
+        handle_websocket(request.env) if @current_user
       else
-        Rails.logger.info("Non-WebSocket request: checking notifications for #{current_devise_api_token&.resource_owner&.id || 'no user'}")
+        Rails.logger.info("Non-WebSocket request: checking notifications for #{@current_devise_api_token&.resource_owner&.id || 'no user'}")
 
-        if current_devise_api_token
-          notifications = current_devise_api_token.resource_owner.notifications.unread
+        if @current_devise_api_token
+          notifications = @current_devise_api_token.resource_owner.notifications.unread
           Rails.logger.info("Found unread notifications: #{notifications.count}")
           render json: notifications, status: :ok
         else
@@ -33,11 +33,11 @@ module Api
 
     def update
       Rails.logger.info("Entering NotificationsController#update with notification ID #{params[:id]}")
-      if current_devise_api_token
-        notification = current_devise_api_token.resource_owner.notifications.find(params[:id])
+      if @current_devise_api_token
+        notification = @current_devise_api_token.resource_owner.notifications.find(params[:id])
 
         if notification.update(read: true)
-          Rails.logger.info("Notification #{notification.id} marked as read for user #{current_devise_api_token.resource_owner.id}")
+          Rails.logger.info("Notification #{notification.id} marked as read for user #{@current_devise_api_token.resource_owner.id}")
           render json: { message: "Notification marked as read." }, status: :ok
         else
           Rails.logger.error("Failed to mark notification #{notification.id} as read")
@@ -53,7 +53,7 @@ module Api
 
     def handle_websocket(env)
       ws = Faye::WebSocket.new(env)
-      user = current_devise_api_token&.resource_owner
+      user = @current_devise_api_token&.resource_owner
 
       if user
         Rails.logger.info "WebSocket connection opened for user #{user.id}"
@@ -78,12 +78,12 @@ module Api
       token = request.query_parameters["token"]
       if token.present?
         # Check if the token is valid by querying the internal Devise API method
-        self.current_devise_api_token = Devise::Api::Token.find_by(access_token: token)
+        @current_devise_api_token = Devise::Api::Token.find_by(access_token: token)
 
         # Ensure the user is set if the token is valid
-        if current_devise_api_token
-          self.current_user = current_devise_api_token.resource_owner
-          Rails.logger.info "Authenticated user #{current_user.id} via WebSocket token"
+        if @current_devise_api_token
+          self.current_user = @current_devise_api_token.resource_owner
+          Rails.logger.info "Authenticated user #{@current_user.id} via WebSocket token"
         else
           Rails.logger.warn "Token authentication failed. Invalid token: #{token}"
         end
@@ -91,7 +91,7 @@ module Api
         Rails.logger.warn "No token provided in WebSocket connection"
       end
 
-      head :unauthorized unless current_devise_api_token
+      head :unauthorized unless @current_devise_api_token
     end
   end
 end
