@@ -82,7 +82,7 @@ module Api
 
         # Ensure the user is set if the token is valid
         if @current_devise_api_token
-          self.current_user = @current_devise_api_token.resource_owner
+          @current_user = @current_devise_api_token.resource_owner
           Rails.logger.info "Authenticated user #{@current_user.id} via WebSocket token"
         else
           Rails.logger.warn "Token authentication failed. Invalid token: #{token}"
