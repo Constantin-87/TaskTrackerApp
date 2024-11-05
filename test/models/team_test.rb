@@ -32,7 +32,7 @@ class TeamTest < ActiveSupport::TestCase
   end
 
   test "should not save team with too short description" do
-    team = Team.new(@valid_attributes.merge(description: "Too short description")) # Updated to be shorter than 20 characters
+    team = Team.new(@valid_attributes.merge(description: "Too short")) # Updated to be shorter than 20 characters
     assert_not team.save, "Saved the team with a description that's too short"
     assert_includes team.errors[:description], "is too short (minimum is 20 characters)"
   end
