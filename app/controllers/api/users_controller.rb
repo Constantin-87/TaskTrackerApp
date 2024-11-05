@@ -53,8 +53,14 @@ module Api
 
     # DELETE /api/users/:id
     def destroy
-      @user.destroy
-      render json: { message: "User deleted successfully" }, status: :ok
+      # Nullify associations
+      @user.tasks.update_all(user_id: nil)
+      # Attempt to destroy the user
+      if @user.destroy
+        render json: { message: "User deleted successfully" }, status: :ok
+      else
+        render json: { error: "Failed to delete user", details: @user.errors.full_messages }, status: :unprocessable_entity
+      end
     end
 
     private

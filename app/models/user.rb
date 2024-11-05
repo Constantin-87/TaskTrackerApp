@@ -8,7 +8,7 @@ class User < ApplicationRecord
 
   # Associations
   has_and_belongs_to_many :teams, optional: true
-  has_many :tasks
+  has_many :tasks, dependent: :nullify
   has_many :notifications, dependent: :destroy
 
   # Validations
