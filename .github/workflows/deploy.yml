@@ -55,6 +55,7 @@ jobs:
             bundle install
             RAILS_ENV=test bundle exec rails db:migrate || (RAILS_ENV=test bundle exec rails db:create db:migrate)
             sudo systemctl restart nginx
+            sudo systemctl restart puma
           EOF
         shell: bash
 

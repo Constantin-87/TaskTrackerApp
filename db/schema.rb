@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_04_090402) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_05_123300) do
   create_table "boards", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -63,7 +63,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_04_090402) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "description"
+    t.string "description", limit: 500
     t.index [ "name" ], name: "index_teams_on_name", unique: true
   end
 
