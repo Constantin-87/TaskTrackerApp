@@ -10,7 +10,7 @@ class NotificationObserver
 
     if task.user.present?
        # Use `url_for` to construct the full task path with host
-       task_link = task_link = "http://localhost:3000/home?task_id=#{task.id}"
+       task_link = task_link = "/api/home?task_id=#{task.id}"
 
       # Create a formatted notification message that includes the link
       notification_message = "#{message}: <a href='#{task_link}' data-turbo='false'>#{task.title}</a>"
