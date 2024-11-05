@@ -65,10 +65,10 @@ module Api
       task.current_user = current_devise_api_token.resource_owner
 
       # Add an observer if user is present
-      task.add_observer(NotificationObserver.instance) if task.user.present?
+      # task.add_observer(NotificationObserver.instance) if task.user.present?
 
       if task.save
-        NotificationObserver.instance.update("Task created", task)
+        # NotificationObserver.instance.update("Task created", task)
         render json: { task: task }, status: :created
       else
         render json: { errors: task.errors.full_messages }, status: :unprocessable_entity
@@ -86,7 +86,7 @@ module Api
       task.current_user = current_devise_api_token.resource_owner
 
       if task.update(task_params)
-        NotificationObserver.instance.update("Task updated", task)
+        # NotificationObserver.instance.update("Task updated", task)
         render json: { task: task }, status: :ok
       else
         Rails.logger.error "Task update failed with errors: #{task.errors.full_messages}"
@@ -97,7 +97,7 @@ module Api
     def destroy
       task = Task.find(params[:id])
       authorize task
-      NotificationObserver.instance.update("Task deleted", task)
+      # NotificationObserver.instance.update("Task deleted", task)
       task.destroy
       render json: { message: "Task deleted successfully" }, status: :ok
     end

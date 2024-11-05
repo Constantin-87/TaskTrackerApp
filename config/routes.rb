@@ -5,7 +5,7 @@ Rails.application.routes.draw do
     devise_for :users, controllers: { tokens: "api/custom_tokens" }
     resources :teams, only: [ :index, :show, :create, :update, :destroy ]
     resources :boards, only: [ :index, :show, :create, :destroy ]
-    resources :tasks, only: [ :index, :show, :create, :update, :destroy ]  # Add :index here
+    resources :tasks, only: [ :index, :show, :create, :update, :destroy ]
     resources :notifications, only: [ :index, :update ] # For listing notifications and marking them as read
     resources :users, only: [ :index, :show, :create, :update, :destroy ]
     get "roles", to: "users#roles"
