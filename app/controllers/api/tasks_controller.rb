@@ -17,7 +17,6 @@ module Api
 
       render json: {
         tasks: tasks.as_json(include: :board).map do |task|
-           Rails.logger.info "Task data with human labels: #{task}"
           task.merge(
             "human_status" => Task.status_human_readable[task["status"]],
             "priority" => task["priority"].to_s.capitalize
@@ -89,7 +88,6 @@ module Api
         # NotificationObserver.instance.update("Task updated", task)
         render json: { task: task }, status: :ok
       else
-        Rails.logger.error "Task update failed with errors: #{task.errors.full_messages}"
         render json: { errors: task.errors.full_messages }, status: :unprocessable_entity
       end
     end
@@ -105,7 +103,6 @@ module Api
     private
 
     def task_params
-      # Only permit parameters without reprocessing `status`
       params.require(:task).permit(:title, :description, :due_date, :board_id, :user_id, :status, :priority)
     end
   end

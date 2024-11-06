@@ -1,4 +1,3 @@
-# test/controllers/api/tasks_controller_test.rb
 require "test_helper"
 
 class Api::TasksControllerTest < ActionDispatch::IntegrationTest
@@ -7,7 +6,7 @@ class Api::TasksControllerTest < ActionDispatch::IntegrationTest
     @manager_user = users(:manager_user)
     @agent_user = users(:agent_user)
     @board = boards(:adminBoard)
-    @task = tasks(:one) # Assuming a task fixture exists
+    @task = tasks(:one)
   end
 
   # Helper method to mock authentication

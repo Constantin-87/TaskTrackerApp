@@ -1,4 +1,3 @@
-# test/controllers/api/boards_controller_test.rb
 require "test_helper"
 
 class Api::BoardsControllerTest < ActionDispatch::IntegrationTest

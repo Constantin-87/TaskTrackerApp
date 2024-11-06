@@ -1,5 +1,3 @@
-# test/models/board_test.rb
-
 require "test_helper"
 
 class BoardTest < ActiveSupport::TestCase

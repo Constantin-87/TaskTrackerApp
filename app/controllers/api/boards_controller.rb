@@ -7,7 +7,7 @@ module Api
       def index
         @boards = policy_scope(Board)  # Use policy_scope to get the correct boards for the user
         authorize Board  # Authorize the collection of boards
-        render json: { boards: @boards } # Return boards as JSON
+        render json: { boards: @boards }
       end
 
       def show
@@ -15,11 +15,10 @@ module Api
         @tasks = @board.tasks
         @users = User.joins(:teams).where(teams: { id: @board.team_id }) # Fetch users associated with the team
         authorize @board
-        status_options = Task.statuses.keys # Assuming status is an enum
-        priority_options = Task.priorities.keys # Assuming priority is an enum
+        status_options = Task.statuses.keys
+        priority_options = Task.priorities.keys
         render json: { board: @board, tasks: @tasks, users: @users, status_options: status_options, priority_options: priority_options }
       end
-
 
       def new
         @board = Board.new
@@ -32,7 +31,7 @@ module Api
         @board = Board.new(board_params)
         authorize @board
         if @board.save
-          render json: { board: @board }, status: :created # Return created board as JSON
+          render json: { board: @board }, status: :created
         else
           # Repopulate @teams if creation fails
           @teams = current_devise_api_token.resource_owner.admin? ? Team.all : Team.where(id: current_devise_api_token.resource_owner.team_id)
@@ -41,15 +40,12 @@ module Api
         end
       end
 
-
       def destroy
-        Rails.logger.info("Current user: #{current_devise_api_token.resource_owner.inspect}")
         @board = Board.find(params[:id])
         authorize @board
         @board.destroy
         render json: { message: "Board deleted successfully" }, status: :ok
       rescue Pundit::NotAuthorizedError
-        Rails.logger.info("User not authorized to delete board")
         render json: { error: "You are not authorized to delete this board." }, status: :forbidden
       end
 

@@ -4,7 +4,7 @@ class Api::TeamsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @admin_user = users(:admin_user)
     @manager_user = users(:manager_user)
-    @team = teams(:agentTeam) # Assuming you have a team fixture named :agentTeam
+    @team = teams(:agentTeam)
   end
 
   # Helper method to mock authentication

@@ -1,4 +1,3 @@
-# app/controllers/api/home_page_controller.rb
 module Api
   class HomePageController < ApplicationController
     before_action :authenticate_devise_api_token!

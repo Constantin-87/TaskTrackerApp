@@ -12,8 +12,7 @@ module TaskTrackerApp
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
-    # If you want to use Devise in API-only mode with token-based auth,
-    # make sure to keep session management in place
+    # To use Devise in API-only mode with token-based auth, session management be keept in place
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore
   end

@@ -20,7 +20,6 @@ module Api
       authorize @team
 
         if @team.save
-          # Process user_ids and board_ids correctly
           user_ids = process_ids(team_params[:user_ids])
           board_ids = process_ids(team_params[:board_ids])
 
@@ -45,7 +44,6 @@ module Api
 
       begin
         if @team.update(team_params)
-          # Process user_ids and board_ids correctly
           user_ids = process_ids(team_params[:user_ids])
           board_ids = process_ids(team_params[:board_ids])
 

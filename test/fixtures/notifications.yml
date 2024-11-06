@@ -1,5 +1,3 @@
-# test/fixtures/notifications.yml
-
 one:
   user: admin_user
   message: "Your task has been assigned."

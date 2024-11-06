@@ -1,4 +1,3 @@
-# test/controllers/home_page_controller_test.rb
 require "test_helper"
 
 class Api::HomePageControllerTest < ActionDispatch::IntegrationTest

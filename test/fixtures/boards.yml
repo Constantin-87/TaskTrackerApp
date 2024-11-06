@@ -2,16 +2,16 @@ agentBoard:
   id: <%= ActiveRecord::FixtureSet.identify(:agentBoard) %>
   name: "Agent Board"
   description: "This is board one."
-  team: agentTeam # References the team fixture
+  team: agentTeam
 
 managerBoard:
   id: <%= ActiveRecord::FixtureSet.identify(:managerBoard) %>
   name: "Manager Board"
   description: "This is board two."
-  team: managerTeam # References another team fixture
+  team: managerTeam
 
 adminBoard:
   id: <%= ActiveRecord::FixtureSet.identify(:adminBoard) %>
   name: "Admin Board"
   description: "This is board three."
-  team: adminTeam # References the admin team fixture
+  team: adminTeam

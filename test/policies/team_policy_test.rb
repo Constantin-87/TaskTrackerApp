@@ -2,10 +2,10 @@ require "test_helper"
 
 class TeamPolicyTest < ActiveSupport::TestCase
   def setup
-    @admin_user = users(:admin_user) # Assuming you have an admin user fixture
-    @manager_user = users(:manager_user) # Assuming you have a manager user fixture
-    @agent_user = users(:agent_user) # Assuming you have an agent user fixture
-    @team = teams(:agentTeam) # Assuming you have a team fixture
+    @admin_user = users(:admin_user)
+    @manager_user = users(:manager_user)
+    @agent_user = users(:agent_user)
+    @team = teams(:agentTeam)
   end
 
   def test_index_as_admin
@@ -13,9 +13,14 @@ class TeamPolicyTest < ActiveSupport::TestCase
     assert policy.index?, "Admin should be able to view the team index"
   end
 
-  def test_index_as_non_admin
+  def test_index_as_manager
     policy = TeamPolicy.new(@manager_user, Team)
-    assert_not policy.index?, "Non-admins should not be able to view the team index"
+    assert policy.index?, "Managers should be able to view the team index"
+  end
+
+  def test_index_as_agent
+    policy = TeamPolicy.new(@agent_user, Team)
+    assert_not policy.index?, "Agents should not be able to view the team index"
   end
 
   def test_create_as_admin
@@ -53,8 +58,13 @@ class TeamPolicyTest < ActiveSupport::TestCase
     assert_equal Team.all, scope, "Admin should be able to view all teams"
   end
 
-  def test_scope_as_non_admin
+  def test_scope_as_manager
     scope = Pundit.policy_scope(@manager_user, Team)
-    assert_nil scope, "Non-admins should not be able to view teams"
+    assert_equal Team.all, scope, "Managers should be able to view all teams"
+  end
+
+  def test_scope_as_agent
+    scope = Pundit.policy_scope(@agent_user, Team)
+    assert_nil scope, "Agents should not be able to view teams"
   end
 end

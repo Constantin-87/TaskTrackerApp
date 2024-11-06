@@ -1,4 +1,4 @@
-name: Deploy to EC2
+name: Deploy to EC2 instance
 
 on:
   workflow_dispatch:
@@ -53,7 +53,8 @@ jobs:
             bundle config set clean true
             bundle config set deployment true
             bundle install
-            RAILS_ENV=test bundle exec rails db:migrate || (RAILS_ENV=test bundle exec rails db:create db:migrate)
+            RAILS_ENV=production bundle exec rails db:create || true
+            RAILS_ENV=production bundle exec rails db:migrate
             sudo systemctl restart nginx
             sudo systemctl restart puma
           EOF

@@ -1,5 +1,3 @@
-# test/fixtures/teams.yml
-
 agentTeam:
   id: <%= ActiveRecord::FixtureSet.identify(:agentTeam) %>
   name: "Agent Team"

@@ -1,5 +1,3 @@
-# test/fixtures/users.yml
-
 admin_user:
   id: <%= ActiveRecord::FixtureSet.identify(:admin_user) %>
   first_name: "Admin"

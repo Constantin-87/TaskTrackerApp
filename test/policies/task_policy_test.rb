@@ -2,10 +2,10 @@ require "test_helper"
 
 class TaskPolicyTest < ActiveSupport::TestCase
   def setup
-    @admin_user = users(:admin_user) # Assuming you have an admin user fixture
-    @manager_user = users(:manager_user) # Assuming you have a manager user fixture
-    @agent_user = users(:agent_user) # Assuming you have an agent user fixture
-    @task = tasks(:one) # Assuming you have a task fixture
+    @admin_user = users(:admin_user)
+    @manager_user = users(:manager_user)
+    @agent_user = users(:agent_user)
+    @task = tasks(:one)
   end
 
   def test_index_as_admin

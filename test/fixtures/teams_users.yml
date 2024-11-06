@@ -1,5 +1,3 @@
-# test/fixtures/teams_users.yml
-
 admin_team_user:
   team_id: <%= ActiveRecord::FixtureSet.identify(:adminTeam) %>
   user_id: <%= ActiveRecord::FixtureSet.identify(:admin_user) %>

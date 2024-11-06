@@ -1,5 +1,3 @@
-# test/models/notification_test.rb
-
 require "test_helper"
 
 class NotificationTest < ActiveSupport::TestCase
@@ -30,8 +28,8 @@ class NotificationTest < ActiveSupport::TestCase
   end
 
   test "unread scope returns only unread notifications" do
-    read_notification = notifications(:two) # Assumes :two is read
-    unread_notification = notifications(:one) # Assumes :one is unread
+    read_notification = notifications(:two) # :two is read
+    unread_notification = notifications(:one) # :one is unread
 
     unread_notifications = Notification.unread
     assert_includes unread_notifications, unread_notification

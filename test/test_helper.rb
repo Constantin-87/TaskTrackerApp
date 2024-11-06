@@ -5,14 +5,11 @@ require "mocha/minitest"
 
 module ActiveSupport
   class TestCase
-    # Run tests in parallel with specified workers
-    parallelize(workers: :number_of_processors, with: :threads)
-
     # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
     fixtures :all
 
     # Disable parallel tests
     self.use_transactional_tests = true
-    parallelize(workers: 1)  # Run tests serially (disable parallelization)
+    parallelize(workers: 1)
   end
 end

@@ -1,4 +1,3 @@
-# app/models/concerns/notification_observer.rb
 require "singleton"
 
 class NotificationObserver

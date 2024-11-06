@@ -1,5 +1,3 @@
-# test/fixtures/tasks.yml
-
 one:
   title: "Build API"
   description: "Build the backend API for handling user requests."

@@ -20,7 +20,7 @@ class TeamTest < ActiveSupport::TestCase
   end
 
   test "should not save team with too short name" do
-    team = Team.new(@valid_attributes.merge(name: "T")) # Updated to match minimum of 2 characters
+    team = Team.new(@valid_attributes.merge(name: "T"))
     assert_not team.save, "Saved the team with a name that's too short"
     assert_includes team.errors[:name], "is too short (minimum is 2 characters)"
   end
@@ -32,7 +32,7 @@ class TeamTest < ActiveSupport::TestCase
   end
 
   test "should not save team with too short description" do
-    team = Team.new(@valid_attributes.merge(description: "Too short")) # Updated to be shorter than 20 characters
+    team = Team.new(@valid_attributes.merge(description: "Too short"))
     assert_not team.save, "Saved the team with a description that's too short"
     assert_includes team.errors[:description], "is too short (minimum is 20 characters)"
   end

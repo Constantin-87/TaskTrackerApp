@@ -1,5 +1,3 @@
-# test/models/task_test.rb
-
 require "test_helper"
 
 class TaskTest < ActiveSupport::TestCase

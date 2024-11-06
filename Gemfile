@@ -15,8 +15,14 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
+gem "devise-api", "~> 0.2.0"
+gem "devise", "~> 4.9"
+gem "observer"
+gem "pundit", "~> 2.4"
+gem "rack-cors", require: "rack/cors"
+gem "faye-websocket"
+
 group :development, :test do
-  # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
 
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
@@ -41,14 +47,6 @@ group :test do
   gem "mocha", require: false
 end
 
-gem "devise", "~> 4.9"
-gem "observer"
-gem "pundit", "~> 2.4"
-gem "rack-cors", require: "rack/cors"
-gem "faye-websocket"
-
 group :production do
   gem "mysql2", "~> 0.5.2"
 end
-
-gem "devise-api", "~> 0.2.0"

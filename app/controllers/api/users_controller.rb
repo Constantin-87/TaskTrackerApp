@@ -1,12 +1,10 @@
-# app/controllers/api/users_controller.rb
 module Api
   class UsersController < ApplicationController
     before_action :authenticate_devise_api_token!
-    before_action :authorize_admin, only: [ :index, :destroy ] # Admin check except for create action
+    before_action :authorize_admin, only: [ :index, :destroy ]
     before_action :set_user, only: [ :show, :update, :destroy ]
     before_action :authorize_profile_edit, only: [ :update ]
 
-    # GET /api/users
     def index
       @users = User.all
       render json: {
@@ -15,12 +13,10 @@ module Api
       }
     end
 
-    # GET /api/users/:id
     def show
       render json: @user.as_json(only: [ :id, :first_name, :last_name, :email, :role ])
     end
 
-    # POST /api/users
     def create
       # Determine the role to assign
       role = current_devise_api_token&.resource_owner&.admin? ? user_params[:role] : "agent"
@@ -34,7 +30,6 @@ module Api
       end
     end
 
-    # PUT /api/users/:id
     def update
       # Validate the current password if it's provided
       if params[:user][:current_password].present? && !current_devise_api_token.resource_owner.admin?
@@ -51,7 +46,6 @@ module Api
       end
     end
 
-    # DELETE /api/users/:id
     def destroy
       # Nullify associations
       @user.tasks.update_all(user_id: nil)

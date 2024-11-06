@@ -20,7 +20,6 @@ class ApplicationController < ActionController::API
 
 
   def frontend_index
-    Rails.logger.info "Serving frontend index"
     render file: Rails.root.join("public", "index.html")
   end
 
