@@ -1,7 +1,8 @@
 module Api
   class TeamsController < ApplicationController
     before_action :authenticate_devise_api_token!
-    before_action :authorize_admin # Ensures only admins can access
+    before_action :authorize_admin_or_manager, only: [ :index ]
+    before_action :authorize_admin, except: [ :index ]
 
     def index
       @teams = Team.all
@@ -62,7 +63,6 @@ module Api
       end
     end
 
-
     def destroy
       @team = Team.find(params[:id])
       authorize @team
@@ -74,6 +74,12 @@ module Api
 
     def team_params
       params.require(:team).permit(:name, :description, user_ids: [], board_ids: [])
+    end
+
+    def authorize_admin_or_manager
+      unless current_devise_api_token.resource_owner&.admin? || current_devise_api_token.resource_owner&.manager?
+        render json: { error: "Not authorized" }, status: :forbidden
+      end
     end
 
     def authorize_admin
