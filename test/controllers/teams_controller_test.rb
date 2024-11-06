@@ -33,9 +33,20 @@ class Api::TeamsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  # Test index action for a non-admin user
-  test "should not get index as non-admin" do
+  # Test index action for a manager user
+  test "should get index as manager" do
     mock_authenticate_user(@manager_user) do
+      get api_teams_path, headers: { "Content-Type" => "application/json" }
+      assert_response :success
+
+      json_response = JSON.parse(response.body)
+      assert json_response.is_a?(Array), "Expected response to be an array of teams"
+    end
+  end
+
+  # Test index action for a agent user
+  test "should not get index as agent" do
+    mock_authenticate_user(@agent_user) do
       get api_teams_path, headers: { "Content-Type" => "application/json" }
       assert_response :forbidden
     end
