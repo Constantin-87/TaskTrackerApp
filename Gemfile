@@ -45,6 +45,7 @@ group :test do
   gem "selenium-webdriver"
   gem "rails-controller-testing"
   gem "mocha", require: false
+  gem "simplecov", require: false
 end
 
 group :production do

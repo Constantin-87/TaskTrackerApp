@@ -24,7 +24,7 @@ module Api
       @user = User.new(user_params.except(:role).merge(role: role))
 
       if @user.save
-        render json: { message: "User created successfully", user: @user, token: token }, status: :created
+        render json: { message: "User created successfully", user: @user }, status: :created
       else
         render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
       end

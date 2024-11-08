@@ -3,6 +3,7 @@ module Api
       before_action :authenticate_devise_api_token!
       after_action :verify_authorized
       rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+      rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 
       def index
         @boards = policy_scope(Board)  # Use policy_scope to get the correct boards for the user
@@ -57,6 +58,10 @@ module Api
 
       def user_not_authorized
         render json: { error: "You are not authorized to perform this action." }, status: :forbidden
+      end
+
+      def record_not_found
+        render json: { error: "Couldn't find Board" }, status: :not_found
       end
     end
 end

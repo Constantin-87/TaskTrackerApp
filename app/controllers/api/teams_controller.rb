@@ -51,6 +51,7 @@ module Api
           @team.users = User.where(id: user_ids)
           @team.boards = Board.where(id: board_ids)
 
+          Rails.logger.debug "Updated team user_ids: #{@team.user_ids}"
           render json: { message: "Team was successfully updated.", team: @team }, status: :ok
         else
           render json: { errors: @team.errors.full_messages }, status: :unprocessable_entity

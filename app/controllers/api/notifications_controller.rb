@@ -11,13 +11,20 @@ module Api
     end
 
     def index
+      Rails.logger.info "NotificationsController#index endpoint hit"
+      Rails.logger.info "WebSocket request: #{Faye::WebSocket.websocket?(request.env)}"
+      Rails.logger.info "Authenticated user ID: #{@current_user&.id || 'None'}"
+      Rails.logger.info "Authenticated via Devise token: #{@current_devise_api_token.present?}"
+
       if Faye::WebSocket.websocket?(request.env)
         handle_websocket(request.env) if @current_user
       else
         if @current_devise_api_token
           notifications = @current_devise_api_token.resource_owner.notifications.unread
+          Rails.logger.info "Retrieved #{notifications.count} unread notifications for user #{@current_devise_api_token.resource_owner.id}"
           render json: notifications, status: :ok
         else
+          Rails.logger.warn "Unauthorized access to index endpoint"
           head :unauthorized
         end
       end
@@ -45,6 +52,7 @@ module Api
 
       if user
         @@connections[user.id] = ws
+        Rails.logger.info "WebSocket opened for user #{user.id}"
       else
         Rails.logger.warn("Failed to authenticate user for WebSocket connection")
       end
@@ -63,6 +71,7 @@ module Api
 
     def authenticate_via_query_token!
       token = request.query_parameters["token"]
+      Rails.logger.info "Attempting to authenticate WebSocket with token: #{token}"
       if token.present?
         # Check if the token is valid by querying the internal Devise API method
         @current_devise_api_token = Devise::Api::Token.find_by(access_token: token)
@@ -70,6 +79,7 @@ module Api
         # Ensure the user is set if the token is valid
         if @current_devise_api_token
           @current_user = @current_devise_api_token.resource_owner
+          Rails.logger.info "Token authentication successful. Authenticated user ID: #{@current_user.id}"
         else
           Rails.logger.warn "Token authentication failed. Invalid token: #{token}"
         end
@@ -77,7 +87,10 @@ module Api
         Rails.logger.warn "No token provided in WebSocket connection"
       end
 
-      head :unauthorized unless @current_devise_api_token
+      unless @current_devise_api_token
+        Rails.logger.warn "Unauthorized WebSocket access due to missing or invalid token."
+        head :unauthorized
+      end
     end
   end
 end

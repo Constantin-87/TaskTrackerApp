@@ -64,4 +64,14 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
+
+
+  # Enable log level to debug for detailed logs
+  config.log_level = :debug
+
+  # Enable logging to stdout for real-time log output in tests
+  config.logger = Logger.new(STDOUT)
+
+  # Optional: Enable colored logging to differentiate info, warnings, and errors
+  config.colorize_logging = true
 end
