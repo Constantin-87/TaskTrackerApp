@@ -4,7 +4,7 @@ require "test_helper"
 class Api::NotificationsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @admin_user = users(:admin_user)
-    @notification = notifications(:one) # Assuming you have a fixture for a notification
+    @notification = notifications(:one)
   end
 
   # Helper method to mock authentication
