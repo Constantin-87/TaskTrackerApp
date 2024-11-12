@@ -19,7 +19,7 @@ Devise.setup do |config|
     # Authorization
     api.authorization.key = "Authorization"
     api.authorization.scheme = "Bearer"
-    api.authorization.location = :both # :header or :params or :both
+    api.authorization.location = :both # :header and :params
     api.authorization.params_key = "access_token"
 
 

@@ -11,21 +11,23 @@ module Api
     end
 
     def index
-      Rails.logger.info "NotificationsController#index endpoint hit"
-      Rails.logger.info "WebSocket request: #{Faye::WebSocket.websocket?(request.env)}"
-      Rails.logger.info "Authenticated user ID: #{@current_user&.id || 'None'}"
-      Rails.logger.info "Authenticated via Devise token: #{@current_devise_api_token.present?}"
-
       if Faye::WebSocket.websocket?(request.env)
-        handle_websocket(request.env) if @current_user
-      else
-        if @current_devise_api_token
-          notifications = @current_devise_api_token.resource_owner.notifications.unread
-          Rails.logger.info "Retrieved #{notifications.count} unread notifications for user #{@current_devise_api_token.resource_owner.id}"
-          render json: notifications, status: :ok
+        if @current_user
+          handle_websocket(request.env)
         else
-          Rails.logger.warn "Unauthorized access to index endpoint"
-          head :unauthorized
+          render status: :unauthorized and return
+        end
+      else
+        respond_to do |format|
+          format.json do
+            if @current_devise_api_token
+              notifications = @current_devise_api_token.resource_owner.notifications.unread
+              render json: notifications, status: :ok
+            else
+              head :unauthorized
+            end
+          end
+          format.any { head :not_acceptable }
         end
       end
     end
@@ -48,22 +50,23 @@ module Api
 
     def handle_websocket(env)
       ws = Faye::WebSocket.new(env)
-      user = @current_devise_api_token&.resource_owner
+      user = @current_user
 
       if user
         @@connections[user.id] = ws
-        Rails.logger.info "WebSocket opened for user #{user.id}"
       else
-        Rails.logger.warn("Failed to authenticate user for WebSocket connection")
-      end
-
-      ws.on :open do |_event|
-        Rails.logger.info "WebSocket connection opened for user #{user.id}"
+        ws.close
+        return
       end
 
       ws.on :close do |_event|
-        Rails.logger.info "WebSocket connection closed for user #{user.id}"
         @@connections.delete(user.id)
+        ws = nil
+      end
+
+      ws.on :error do |_event|
+        Rails.logger.error "WebSocket error for user #{user.id}: #{_event.message}"
+        ws.close
       end
 
       ws.rack_response
@@ -71,7 +74,6 @@ module Api
 
     def authenticate_via_query_token!
       token = request.query_parameters["token"]
-      Rails.logger.info "Attempting to authenticate WebSocket with token: #{token}"
       if token.present?
         # Check if the token is valid by querying the internal Devise API method
         @current_devise_api_token = Devise::Api::Token.find_by(access_token: token)
@@ -79,7 +81,6 @@ module Api
         # Ensure the user is set if the token is valid
         if @current_devise_api_token
           @current_user = @current_devise_api_token.resource_owner
-          Rails.logger.info "Token authentication successful. Authenticated user ID: #{@current_user.id}"
         else
           Rails.logger.warn "Token authentication failed. Invalid token: #{token}"
         end
