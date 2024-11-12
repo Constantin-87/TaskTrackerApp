@@ -18,6 +18,7 @@ module Api
           render status: :unauthorized and return
         end
       else
+        request.format = :json unless request.format.json?
         respond_to do |format|
           format.json do
             if @current_devise_api_token
